@@ -130,12 +130,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 #bb3{background:linear-gradient(180deg,#4499FF,#0033AA);box-shadow:0 8px 0 #001166,inset 0 2px 0 rgba(255,255,255,.25);}
 #bb4{background:linear-gradient(180deg,#AA44EE,#660099);box-shadow:0 8px 0 #330055,inset 0 2px 0 rgba(255,255,255,.25);}
 #bb5{background:linear-gradient(180deg,#FFDD22,#BB8800);box-shadow:0 8px 0 #554400,inset 0 2px 0 rgba(255,255,255,.25);}
-#bb0:active{box-shadow:0 2px 0 #880011;}
-#bb1:active{box-shadow:0 2px 0 #883300;}
-#bb2:active{box-shadow:0 2px 0 #004411;}
-#bb3:active{box-shadow:0 2px 0 #001166;}
-#bb4:active{box-shadow:0 2px 0 #330055;}
-#bb5:active{box-shadow:0 2px 0 #554400;}
+#bb0:active{box-shadow:0 2px 0 #880011;}#bb1:active{box-shadow:0 2px 0 #883300;}#bb2:active{box-shadow:0 2px 0 #004411;}#bb3:active{box-shadow:0 2px 0 #001166;}#bb4:active{box-shadow:0 2px 0 #330055;}#bb5:active{box-shadow:0 2px 0 #554400;}
 #boss-intro{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 #boss-intro.on{display:flex;}
 .boss-skull{font-size:6rem;animation:bSk 1s infinite alternate;}
@@ -274,7 +269,16 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 </div></div>
 <div id="lvl-banner"></div>
 <script>
-var IMGS=['lion.png','heart.png','cat.png','dove.png','dog.png'];
+/* ═══════════════════════════════
+   EXACT FILE NAMES FROM YOUR GITHUB
+═══════════════════════════════ */
+var IMGS=[
+  'Lion.jpg.PNG',
+  'Hearth.jpg.PNG',
+  'Cat.jpg.PNG',
+  'Dove.jpg.PNG',
+  'Dog.jpg 2.PNG'
+];
 var NAMES=['Lion','Heart','Cat','Dove','Dog'];
 var COLORS=['#FF8C00','#FF0044','#8800CC','#0044CC','#FF6600'];
 var COLS=9,ROWS=9,NT=5,GAP=3;
