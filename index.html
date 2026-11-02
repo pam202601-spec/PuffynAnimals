@@ -35,7 +35,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .tm-val{font-size:1.8rem;font-weight:900;color:#fff;line-height:1;}
 .tm-val.urgent{color:#FF3366;animation:pulse .5s infinite alternate;}
 @keyframes pulse{from{opacity:1;}to{opacity:.3;}}
-.gear{width:38px;height:38px;flex-shrink:0;background:#111;border-radius:50%;border:2.5px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;margin-left:6px;}
+.top-btn{width:38px;height:38px;flex-shrink:0;background:#111;border-radius:50%;border:2.5px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;margin-left:4px;}
 
 #middle{flex:1;display:flex;overflow:hidden;min-height:0;}
 
@@ -102,45 +102,47 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .tw.pw-bomb .tb{background:radial-gradient(circle at 50% 35%,#FF4466,#AA0022)!important;border-color:#FF0044!important;box-shadow:0 3px 0 rgba(0,0,0,.8),0 0 20px rgba(255,0,68,.8)!important;}
 .tw.pw-rainbow .tb{background:radial-gradient(circle at 50% 35%,#CC44FF,#660099)!important;border-color:#FF88FF!important;box-shadow:0 3px 0 rgba(0,0,0,.8),0 0 20px rgba(200,100,255,.8)!important;}
 
-/* POWER TOOLTIP */
-#pw-tooltip{
-  display:none;position:fixed;z-index:800;
-  background:#111;border:2.5px solid #FFD700;border-radius:16px;
-  padding:12px 16px;text-align:center;
-  max-width:240px;
-  box-shadow:0 8px 24px rgba(0,0,0,.8);
-  animation:tipIn .2s cubic-bezier(.22,1,.36,1);
-}
-#pw-tooltip.on{display:block;}
-@keyframes tipIn{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
-.tip-ico{font-size:2.5rem;margin-bottom:4px;}
-.tip-name{font-size:.85rem;font-weight:900;color:#FFD700;margin-bottom:4px;}
-.tip-desc{font-size:.62rem;color:#ddd;line-height:1.4;margin-bottom:6px;}
-.tip-combo{font-size:.52rem;color:#FF88FF;font-weight:900;margin-bottom:2px;}
-.tip-combo-row{font-size:.48rem;color:#ccc;line-height:1.5;}
-.tip-tap{font-size:.48rem;color:#888;margin-top:6px;font-style:italic;}
+/* BLOCKERS - BIG, FILLS ENTIRE TILE */
+.tw.bk{cursor:default;}
+.bi{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.2em;z-index:4;}
 
-/* COMBO FLASH */
-#combo-flash{display:none;position:fixed;inset:0;z-index:750;align-items:center;justify-content:center;pointer-events:none;}
-#combo-flash.on{display:flex;}
-.cf-box{background:rgba(0,0,0,.85);border:3px solid #FFD700;border-radius:20px;padding:16px 28px;text-align:center;animation:cfIn .3s cubic-bezier(.22,1,.36,1);}
-@keyframes cfIn{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
-.cf-ico{font-size:2.8rem;margin-bottom:4px;}
-.cf-name{font-size:1.2rem;font-weight:900;color:#FFD700;}
-.cf-desc{font-size:.7rem;color:#ddd;margin-top:3px;}
+/* ICE - big glossy blue cube fills whole tile */
+.bk-ice .tb{
+  background:linear-gradient(145deg,#E8F8FF,#87CEEB,#4499CC)!important;
+  border:3px solid #66BBFF!important;
+  box-shadow:inset 0 2px 8px rgba(255,255,255,.7),inset 0 -2px 6px rgba(0,80,160,.4),0 3px 0 rgba(0,0,0,.8),0 0 15px rgba(100,200,255,.5)!important;
+}
+.bk-ice .bi{font-size:2.6em;filter:drop-shadow(0 2px 4px rgba(0,100,200,.5));}
+/* Ice shine overlay */
+.bk-ice .tb::after{content:'';position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0));border-radius:7px 7px 50% 50%;pointer-events:none;z-index:5;}
+/* Ice cracks */
+.bk-ice .tb::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.15) 8px,rgba(255,255,255,.15) 9px);pointer-events:none;z-index:4;}
+
+/* BONE - animal theme replaces chain */
+.bk-bone .tb{
+  background:linear-gradient(145deg,#F5F0E0,#D4C9A8,#B8A878)!important;
+  border:3px solid #D4C9A8!important;
+  box-shadow:inset 0 2px 6px rgba(255,255,255,.5),inset 0 -2px 4px rgba(100,80,30,.3),0 3px 0 rgba(0,0,0,.8)!important;
+}
+.bk-bone .bi{font-size:2.4em;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));}
+
+/* VINE */
+.bk-vine .tb{background:linear-gradient(145deg,#66CC44,#2d8a10,#1a5a08)!important;border:3px solid #88DD44!important;box-shadow:inset 0 2px 6px rgba(255,255,255,.2),0 3px 0 rgba(0,0,0,.8)!important;}
+.bk-vine .bi{font-size:2.4em;}
+
+/* WOOD LOG */
+.bk-wood .tb{background:linear-gradient(145deg,#CC8844,#8B5520,#5a3008)!important;border:3px solid #DDAA55!important;box-shadow:inset 0 2px 6px rgba(255,200,100,.2),0 3px 0 rgba(0,0,0,.8)!important;}
+.bk-wood .bi{font-size:2.4em;}
+
+/* STONE - boss */
+.bk-stone .tb{background:linear-gradient(145deg,#AAAAAA,#666,#333)!important;border:3px solid #BBBBBB!important;box-shadow:inset 0 2px 6px rgba(255,255,255,.15),0 3px 0 rgba(0,0,0,.8)!important;}
+.bk-stone .bi{font-size:2.4em;}
 
 /* Selected */
 .tw.sel .tb{border-color:#FFD700!important;box-shadow:0 0 0 2px rgba(255,215,0,.9),0 0 18px rgba(255,215,0,.8)!important;}
 .tw.sel .ta{transform:translateY(-2px) scale(1.05);}
 .tw.ht .ta{animation:htA .6s infinite alternate;}
 @keyframes htA{from{filter:brightness(1);}to{filter:brightness(1.5) drop-shadow(0 0 8px rgba(255,240,50,.9));}}
-.tw.bk{cursor:default;}
-.bi{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.6em;z-index:4;}
-.bk-ice .tb{background:linear-gradient(155deg,#C8EEFF,#87CEEB)!important;border-color:#66AAFF!important;}
-.bk-chain .tb{background:linear-gradient(155deg,#999,#444)!important;border-color:#aaa!important;}
-.bk-vine .tb{background:linear-gradient(155deg,#44AA22,#1a5a08)!important;border-color:#66CC33!important;}
-.bk-wood .tb{background:linear-gradient(155deg,#AA7733,#5a3008)!important;border-color:#CC9944!important;}
-.bk-stone .tb{background:linear-gradient(155deg,#888,#333)!important;border-color:#aaa!important;}
 
 /* RIGHT PANEL */
 #rp{width:165px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;padding:7px 6px;background:#000;border-left:3px solid #FFD700;overflow-y:auto;}
@@ -162,20 +164,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .gallery-prize{background:rgba(255,215,0,.1);border:1.5px solid rgba(255,215,0,.4);border-radius:9px;padding:5px;text-align:center;}
 .gallery-prize-lbl{font-size:.46rem;font-weight:900;color:#FFD700;text-transform:uppercase;}
 .gallery-prize-val{font-size:.72rem;font-weight:900;color:#fff;}
-
-/* Power Guide Card */
-.pw-guide{background:#111;border:2.5px solid #FFD700;border-radius:12px;padding:7px;flex-shrink:0;}
-.pw-guide-lbl{font-size:.58rem;font-weight:900;color:#FFD700;text-transform:uppercase;text-align:center;margin-bottom:5px;letter-spacing:1px;}
-.pw-guide-row{display:flex;align-items:center;gap:5px;background:#1a1a1a;border-radius:8px;padding:4px 5px;margin-bottom:3px;cursor:pointer;}
-.pw-guide-row:active{background:#2a2a2a;}
-.pw-guide-ico{font-size:1.3rem;flex-shrink:0;width:28px;text-align:center;}
-.pw-guide-info{flex:1;}
-.pw-guide-name{font-size:.52rem;font-weight:900;color:#FFE566;line-height:1;}
-.pw-guide-desc{font-size:.4rem;color:#aaa;line-height:1.3;margin-top:1px;}
-.pw-combo-title{font-size:.44rem;font-weight:900;color:#FF88FF;text-align:center;margin:4px 0 2px;}
-.pw-combo-row{display:flex;align-items:center;gap:3px;background:#1a1a1a;border-radius:6px;padding:3px 4px;margin-bottom:2px;}
-.pw-combo-ico{font-size:.9rem;flex-shrink:0;}
-.pw-combo-desc{font-size:.36rem;color:#ccc;flex:1;line-height:1.3;}
 
 .sh-card{background:#111;border:2.5px solid #FFD700;border-radius:12px;padding:7px;text-align:center;flex-shrink:0;}
 .sh-lbl{font-size:.58rem;font-weight:900;color:#FFD700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
@@ -201,6 +189,35 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 #bb0:active{box-shadow:0 1px 0 #880011;}#bb1:active{box-shadow:0 1px 0 #883300;}
 #bb2:active{box-shadow:0 1px 0 #004411;}#bb3:active{box-shadow:0 1px 0 #001166;}
 #bb4:active{box-shadow:0 1px 0 #330055;}#bb5:active{box-shadow:0 1px 0 #554400;}
+
+/* HELP MENU */
+#help-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;align-items:flex-start;justify-content:center;overflow-y:auto;padding:10px;}
+#help-ov.on{display:flex;}
+.help-box{background:#111;border:3px solid #FFD700;border-radius:24px;padding:18px;width:92%;max-width:480px;margin:auto;}
+.help-ttl{font-size:1.4rem;font-weight:900;color:#FFD700;text-align:center;margin-bottom:14px;}
+.help-section{margin-bottom:14px;}
+.help-section-ttl{font-size:.72rem;font-weight:900;color:#FF88FF;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(255,136,255,.3);}
+.help-row{display:flex;align-items:flex-start;gap:8px;background:#1a1a1a;border-radius:10px;padding:7px 8px;margin-bottom:4px;}
+.help-ico{font-size:1.6rem;flex-shrink:0;width:32px;text-align:center;line-height:1;}
+.help-info{flex:1;}
+.help-name{font-size:.65rem;font-weight:900;color:#FFE566;margin-bottom:2px;}
+.help-desc{font-size:.52rem;color:#ccc;line-height:1.5;}
+.help-how{font-size:.46rem;color:#FF9900;margin-top:2px;font-style:italic;}
+.help-combo-row{display:flex;align-items:center;gap:6px;background:#1a1a1a;border-radius:8px;padding:5px 8px;margin-bottom:3px;}
+.help-combo-ico{font-size:1.1rem;flex-shrink:0;}
+.help-combo-info{flex:1;}
+.help-combo-name{font-size:.58rem;font-weight:900;color:#FFD700;}
+.help-combo-desc{font-size:.46rem;color:#ccc;line-height:1.4;}
+.help-close{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:.95rem;font-weight:900;padding:12px;border-radius:18px;border:2.5px solid rgba(255,255,255,.25);cursor:pointer;width:100%;margin-top:8px;box-shadow:0 5px 0 #7A4000;}
+
+/* COMBO FLASH */
+#combo-flash{display:none;position:fixed;inset:0;z-index:750;align-items:center;justify-content:center;pointer-events:none;}
+#combo-flash.on{display:flex;}
+.cf-box{background:rgba(0,0,0,.9);border:3px solid #FFD700;border-radius:20px;padding:16px 28px;text-align:center;animation:cfIn .3s cubic-bezier(.22,1,.36,1);}
+@keyframes cfIn{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.cf-ico{font-size:2.8rem;margin-bottom:4px;}
+.cf-name{font-size:1.2rem;font-weight:900;color:#FFD700;}
+.cf-desc{font-size:.7rem;color:#ddd;margin-top:3px;}
 
 /* BOSS */
 #boss-intro{display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
@@ -289,12 +306,13 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 }
 @media(max-width:500px){
   #lp,#rp{width:78px;}
-  .goal-card,.lives-card,.bs-card,.pw-guide{display:none;}
+  .goal-card,.lives-card,.bs-card{display:none;}
   .bb-lbl{font-size:.28rem;}
 }
 </style>
 </head>
 <body>
+
 <div id="splash">
   <div class="sp-logo"><span class="l1">👑 PUFFY</span><span class="l2">ANIMALS QUEST</span></div>
   <div class="sp-animals" id="spa"></div>
@@ -309,7 +327,8 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
     </div>
     <div id="timer-box"><div class="tm-lbl">⏱ TIME</div><div class="tm-val" id="tm-val">60</div></div>
     <div id="mv-box"><div class="mv-lbl">MOVES</div><div class="mv-val" id="mv-val">28</div></div>
-    <div class="gear" onclick="showMap()">🗺️</div>
+    <div class="top-btn" onclick="showMap()">🗺️</div>
+    <div class="top-btn" onclick="showHelp()">❓</div>
   </div>
 
   <div id="middle">
@@ -337,8 +356,8 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
         <div class="bs-lbl">BOOSTERS</div>
         <div class="bs-row">
           <div class="bs-btn" id="bl0" onclick="useBst(0)"><div class="bs-ico h">🔨</div><div class="bs-name">Hammer</div><div class="bs-cnt" id="bc0">3</div></div>
-          <div class="bs-btn" id="bl1" onclick="useBst(1)"><div class="bs-ico s">⭐</div><div class="bs-name">Row</div><div class="bs-cnt" id="bc1">3</div></div>
-          <div class="bs-btn" id="bl2" onclick="useBst(2)"><div class="bs-ico g">🌐</div><div class="bs-name">Bomb</div><div class="bs-cnt" id="bc2">3</div></div>
+          <div class="bs-btn" id="bl1" onclick="useBst(1)"><div class="bs-ico s">⭐</div><div class="bs-name">Row Clear</div><div class="bs-cnt" id="bc1">3</div></div>
+          <div class="bs-btn" id="bl2" onclick="useBst(2)"><div class="bs-ico g">🌐</div><div class="bs-name">Color Bomb</div><div class="bs-cnt" id="bc2">3</div></div>
         </div>
       </div>
     </div>
@@ -358,38 +377,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
           <div class="gallery-prize-lbl">🏆 PRIZE</div>
           <div class="gallery-prize-val" id="gal-prize">500🪙 +3🔨</div>
         </div>
-      </div>
-      <!-- POWER GUIDE -->
-      <div class="pw-guide">
-        <div class="pw-guide-lbl">⚡ POWER GUIDE</div>
-        <div class="pw-guide-row" onclick="showTip('rocket')">
-          <div class="pw-guide-ico">🚀</div>
-          <div class="pw-guide-info">
-            <div class="pw-guide-name">ROCKET</div>
-            <div class="pw-guide-desc">Clears full row + full column</div>
-          </div>
-        </div>
-        <div class="pw-guide-row" onclick="showTip('bomb')">
-          <div class="pw-guide-ico">💣</div>
-          <div class="pw-guide-info">
-            <div class="pw-guide-name">BOMB</div>
-            <div class="pw-guide-desc">Blasts 3×3 area — 9 tiles</div>
-          </div>
-        </div>
-        <div class="pw-guide-row" onclick="showTip('rainbow')">
-          <div class="pw-guide-ico">🌈</div>
-          <div class="pw-guide-info">
-            <div class="pw-guide-name">RAINBOW</div>
-            <div class="pw-guide-desc">Clears ALL of one animal type</div>
-          </div>
-        </div>
-        <div class="pw-combo-title">🔥 COMBOS — swap 2 together!</div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">🚀🚀</div><div class="pw-combo-desc">2 rows + 2 columns cleared</div></div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">🚀💣</div><div class="pw-combo-desc">3 rows + 3 columns cleared</div></div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">🚀🌈</div><div class="pw-combo-desc">All one animal + row + column</div></div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">💣💣</div><div class="pw-combo-desc">Massive 5×5 area blast!</div></div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">💣🌈</div><div class="pw-combo-desc">All one animal + 5×5 blast</div></div>
-        <div class="pw-combo-row"><div class="pw-combo-ico">🌈🌈</div><div class="pw-combo-desc">ENTIRE BOARD cleared!</div></div>
       </div>
       <div class="sh-card">
         <div class="sh-lbl">💰 SHOP</div>
@@ -411,14 +398,155 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   </div>
 </div>
 
-<!-- POWER TOOLTIP -->
-<div id="pw-tooltip">
-  <div class="tip-ico" id="tip-ico">🚀</div>
-  <div class="tip-name" id="tip-name">ROCKET</div>
-  <div class="tip-desc" id="tip-desc">Clears the entire row and entire column where it sits — a cross-shaped blast!</div>
-  <div class="tip-combo" id="tip-combo-lbl">🔥 COMBOS</div>
-  <div class="tip-combo-row" id="tip-combo-rows"></div>
-  <div class="tip-tap">Tap anywhere to close</div>
+<!-- HELP MENU -->
+<div id="help-ov">
+  <div class="help-box">
+    <div class="help-ttl">❓ HOW TO PLAY</div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">🎯 Goal</div>
+      <div class="help-row">
+        <div class="help-ico">🔀</div>
+        <div class="help-info">
+          <div class="help-name">Match 3 or more animals</div>
+          <div class="help-desc">Swap two adjacent animals to line up 3 or more of the same type. They disappear and you score points! Complete the goal before running out of moves.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">⚡ Power Tiles — How to Create</div>
+      <div class="help-row">
+        <div class="help-ico">🚀</div>
+        <div class="help-info">
+          <div class="help-name">ROCKET — Match 4 in a row</div>
+          <div class="help-desc">Line up exactly 4 of the same animal in a straight line. A Rocket appears! Tap it to blast the entire row AND the entire column — a powerful cross-shaped clear!</div>
+          <div class="help-how">💡 Best used when many blockers are in one row or column</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">💣</div>
+        <div class="help-info">
+          <div class="help-name">BOMB — Match in L or T shape</div>
+          <div class="help-desc">Match animals in an L-shape or T-shape — 5 tiles total. A Bomb appears! Tap it to explode a 3×3 area clearing 9 tiles around it!</div>
+          <div class="help-how">💡 Best used in the middle of a group of blockers</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🌈</div>
+        <div class="help-info">
+          <div class="help-name">RAINBOW — Match 5 in a row</div>
+          <div class="help-desc">Line up 5 or more of the same animal in a straight line. A Rainbow appears! Tap it to clear EVERY tile of that same animal type from the entire board instantly!</div>
+          <div class="help-how">💡 Best used on your target animal to complete goals fast</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">🔥 Power Combos — Swap 2 Power Tiles Together!</div>
+      <div class="help-combo-row"><div class="help-combo-ico">🚀🚀</div><div class="help-combo-info"><div class="help-combo-name">Double Rocket</div><div class="help-combo-desc">Clears 2 full rows + 2 full columns at once!</div></div></div>
+      <div class="help-combo-row"><div class="help-combo-ico">🚀💣</div><div class="help-combo-info"><div class="help-combo-name">Rocket Bomb</div><div class="help-combo-desc">Clears 3 full rows + 3 full columns — massive!</div></div></div>
+      <div class="help-combo-row"><div class="help-combo-ico">🚀🌈</div><div class="help-combo-info"><div class="help-combo-name">Rainbow Rocket</div><div class="help-combo-desc">Clears all of one animal type + full row + column!</div></div></div>
+      <div class="help-combo-row"><div class="help-combo-ico">💣💣</div><div class="help-combo-info"><div class="help-combo-name">Mega Bomb</div><div class="help-combo-desc">Giant 5×5 explosion — clears 25 tiles!</div></div></div>
+      <div class="help-combo-row"><div class="help-combo-ico">💣🌈</div><div class="help-combo-info"><div class="help-combo-name">Rainbow Bomb</div><div class="help-combo-desc">Clears all of one animal + a 5×5 area!</div></div></div>
+      <div class="help-combo-row"><div class="help-combo-ico">🌈🌈</div><div class="help-combo-info"><div class="help-combo-name">Total Wipeout!</div><div class="help-combo-desc">🌟 The ENTIRE board is cleared instantly!</div></div></div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">🧱 Blockers — Clear by Matching Next to Them</div>
+      <div class="help-row">
+        <div class="help-ico">🧊</div>
+        <div class="help-info">
+          <div class="help-name">ICE CUBE</div>
+          <div class="help-desc">A frozen tile blocking the board. Match any animal next to it to crack it. One hit destroys it!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🦴</div>
+        <div class="help-info">
+          <div class="help-name">BONE</div>
+          <div class="help-desc">A big bone stuck on the board. Match next to it to remove it. One hit and it is gone!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🌿</div>
+        <div class="help-info">
+          <div class="help-name">VINE</div>
+          <div class="help-desc">Tangled vines blocking tiles. Match next to them to cut them free!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🪵</div>
+        <div class="help-info">
+          <div class="help-name">WOOD LOG</div>
+          <div class="help-desc">A tough wooden log. Takes 2 hits to destroy — first hit cracks it to ice, second hit clears it!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🪨</div>
+        <div class="help-info">
+          <div class="help-name">STONE — Boss Levels Only!</div>
+          <div class="help-desc">Super tough stone blocks appear on boss levels every 10th level. Takes 2 hits like wood. Clear ALL stones to defeat the boss and win!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">🔧 Boosters</div>
+      <div class="help-row">
+        <div class="help-ico">🔨</div>
+        <div class="help-info">
+          <div class="help-name">HAMMER — Tap any tile</div>
+          <div class="help-desc">Activate then tap any single tile to remove it instantly — great for clearing one stubborn blocker!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">⭐</div>
+        <div class="help-info">
+          <div class="help-name">ROW CLEAR — Tap any tile</div>
+          <div class="help-desc">Activate then tap any tile to clear the entire row it sits in instantly!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">🌐</div>
+        <div class="help-info">
+          <div class="help-name">COLOR BOMB — Tap any tile</div>
+          <div class="help-desc">Activate then tap any tile to clear ALL animals of that same type from the entire board!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">🎨 Art Gallery</div>
+      <div class="help-row">
+        <div class="help-ico">🖼️</div>
+        <div class="help-info">
+          <div class="help-name">Collect puzzle pieces</div>
+          <div class="help-desc">Complete levels to reveal pieces of a beautiful animal painting! Collect all 16 pieces to complete the artwork and earn a big prize — coins and boosters!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-ttl">⚠️ Special Levels</div>
+      <div class="help-row">
+        <div class="help-ico">⚡</div>
+        <div class="help-info">
+          <div class="help-name">SPEED LEVELS — Every 5th level</div>
+          <div class="help-desc">Race against a 60 second countdown timer! Complete the goal before time runs out. Use boosters wisely!</div>
+        </div>
+      </div>
+      <div class="help-row">
+        <div class="help-ico">💀</div>
+        <div class="help-info">
+          <div class="help-name">BOSS LEVELS — Every 10th level</div>
+          <div class="help-desc">The board is filled with stone blockers. Clear every single stone to defeat the boss and earn 800 bonus coins!</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="help-close" onclick="hideHelp()">✅ GOT IT — LET'S PLAY!</button>
+  </div>
 </div>
 
 <!-- COMBO FLASH -->
@@ -426,7 +554,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   <div class="cf-box">
     <div class="cf-ico" id="cf-ico">🚀💣</div>
     <div class="cf-name" id="cf-name">COMBO!</div>
-    <div class="cf-desc" id="cf-desc">Row Blast + Bomb = 3 rows + 3 columns!</div>
+    <div class="cf-desc" id="cf-desc"></div>
   </div>
 </div>
 
@@ -434,7 +562,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 <div id="boss-intro">
   <div class="boss-skull">💀</div>
   <div class="boss-ttl" id="boss-ttl">BOSS LEVEL!</div>
-  <div class="boss-sub">Clear all stone blockers to win!</div>
+  <div class="boss-sub">Clear all stone blockers to win! +800 coins!</div>
   <button class="boss-btn" onclick="startBoss()">⚔️ FIGHT!</button>
 </div>
 
@@ -491,7 +619,7 @@ var NAMES=['Lion','Heart','Cat','Dove','Dog'];
 var COLORS=['#FF8C00','#FF0044','#8800CC','#0044CC','#FF6600'];
 var COLS=9,ROWS=9,NT=5,GAP=3;
 var ANIM_SWAP=90,ANIM_POP=140,ANIM_DROP=210,ANIM_STAGGER=12;
-var BLK_ICE=10,BLK_CHAIN=11,BLK_VINE=12,BLK_WOOD=13,BLK_STONE=14;
+var BLK_ICE=10,BLK_BONE=11,BLK_VINE=12,BLK_WOOD=13,BLK_STONE=14;
 var PWR_ROCKET='rocket',PWR_BOMB='bomb',PWR_RAINBOW='rainbow';
 var PIECES=16,LVL_PER_PUZZLE=8,MAX_LEVELS=40;
 var grid=[],score=0,movesLeft=28;
@@ -501,49 +629,13 @@ var selR=-1,selC=-1,htTimer=null,actBst=-1;
 var bst=[3,3,3],coins=1250,lives=5,locked=false;
 var TS=48,timerVal=60,timerInt=null,timerRunning=false;
 var piecesRevealed=[0,0,0,0,0],levelStars=[];
-var tooltipTimer=null,comboFlashTimer=null;
+var comboFlashTimer=null;
 
 var imgCache=[];
 IMGS.forEach(function(src){var i=new Image();i.src=src;imgCache.push(i);});
 
-/* POWER TOOLTIP DATA */
-var TIP_DATA={
-  rocket:{
-    ico:'🚀',name:'ROCKET',
-    desc:'Match 4 in a row to create! Clears the entire row AND entire column — a powerful cross-shaped blast!',
-    combos:['🚀+🚀 = 2 rows + 2 columns cleared','🚀+💣 = 3 rows + 3 columns cleared','🚀+🌈 = All one animal + row + column']
-  },
-  bomb:{
-    ico:'💣',name:'BOMB',
-    desc:'Match in an L or T shape to create! Explodes in a 3×3 area clearing 9 tiles around it!',
-    combos:['💣+🚀 = 3 rows + 3 columns cleared','💣+💣 = MASSIVE 5×5 area — 25 tiles!','💣+🌈 = All one animal + 5×5 blast']
-  },
-  rainbow:{
-    ico:'🌈',name:'RAINBOW',
-    desc:'Match 5 in a row to create! Clears ALL tiles of the same animal type from the entire board!',
-    combos:['🌈+🚀 = All one animal + row + column','🌈+💣 = All one animal + 5×5 blast','🌈+🌈 = ENTIRE BOARD cleared instantly!']
-  }
-};
-
-function showTip(type){
-  var d=TIP_DATA[type];if(!d)return;
-  var el=document.getElementById('pw-tooltip');
-  document.getElementById('tip-ico').textContent=d.ico;
-  document.getElementById('tip-name').textContent=d.name;
-  document.getElementById('tip-desc').textContent=d.desc;
-  document.getElementById('tip-combo-rows').textContent=d.combos.join('\n');
-  document.getElementById('tip-combo-rows').style.whiteSpace='pre-line';
-  el.style.cssText='display:block;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:800;background:#111;border:2.5px solid #FFD700;border-radius:16px;padding:14px 18px;text-align:center;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.9);';
-  el.classList.add('on');
-  if(tooltipTimer)clearTimeout(tooltipTimer);
-  tooltipTimer=setTimeout(hideTip,3500);
-  el.onclick=hideTip;
-}
-function hideTip(){
-  document.getElementById('pw-tooltip').classList.remove('on');
-  document.getElementById('pw-tooltip').style.display='none';
-  if(tooltipTimer)clearTimeout(tooltipTimer);
-}
+function showHelp(){document.getElementById('help-ov').classList.add('on');}
+function hideHelp(){document.getElementById('help-ov').classList.remove('on');}
 
 function showComboFlash(ico,name,desc){
   var el=document.getElementById('combo-flash');
@@ -570,7 +662,7 @@ function mkLvl(n){
   g[f]=20+d*2;g[(f+1)%NT]=10+d;g[(f+2)%NT]=5;
   var blks=[];
   if(n>=2)for(var i=0;i<Math.min(d*2,8);i++)blks.push(BLK_ICE);
-  if(n>=5)for(var i=0;i<Math.min(d,4);i++)blks.push(BLK_CHAIN);
+  if(n>=5)for(var i=0;i<Math.min(d,4);i++)blks.push(BLK_BONE);
   if(n>=8)for(var i=0;i<Math.min(d-1,3);i++)blks.push(BLK_VINE);
   if(n>=12)for(var i=0;i<Math.min(d-2,3);i++)blks.push(BLK_WOOD);
   if(isBoss)for(var i=0;i<12;i++)blks.push(BLK_STONE);
@@ -646,16 +738,15 @@ function checkPower(ms){
   return null;
 }
 
-/* ══ POWER COMBO SYSTEM ══ */
 function getPowerCombo(pw1,pw2){
   var key=[pw1,pw2].sort().join('+');
   var combos={
     'rocket+rocket':{name:'DOUBLE ROCKET!',ico:'🚀🚀',desc:'2 full rows + 2 full columns cleared!',fn:comboRocketRocket},
     'bomb+rocket':{name:'ROCKET BOMB!',ico:'🚀💣',desc:'3 full rows + 3 full columns cleared!',fn:comboBombRocket},
     'rainbow+rocket':{name:'RAINBOW ROCKET!',ico:'🚀🌈',desc:'All one animal + full row + column!',fn:comboRainbowRocket},
-    'bomb+bomb':{name:'MEGA BOMB!',ico:'💣💣',desc:'Massive 5×5 area blast — 25 tiles!',fn:comboBombBomb},
+    'bomb+bomb':{name:'MEGA BOMB!',ico:'💣💣',desc:'Massive 5×5 area — 25 tiles cleared!',fn:comboBombBomb},
     'bomb+rainbow':{name:'RAINBOW BOMB!',ico:'💣🌈',desc:'All one animal + 5×5 area blast!',fn:comboRainbowBomb},
-    'rainbow+rainbow':{name:'TOTAL WIPEOUT!',ico:'🌈🌈',desc:'ENTIRE BOARD cleared instantly!',fn:comboRainbowRainbow}
+    'rainbow+rainbow':{name:'TOTAL WIPEOUT!',ico:'🌈🌈',desc:'The ENTIRE board cleared instantly!',fn:comboRainbowRainbow}
   };
   return combos[key]||null;
 }
@@ -744,8 +835,9 @@ function syncCell(r,c){
   if(cell==null)return;
   if(typeof cell==='number'){
     w.classList.add('bk');
-    var clsMap={10:'bk-ice',11:'bk-chain',12:'bk-vine',13:'bk-wood',14:'bk-stone'};
-    var icoMap={10:'🧊',11:'⛓️',12:'🌿',13:'📦',14:'🪨'};
+    /* Updated blockers: chain replaced with bone */
+    var clsMap={10:'bk-ice',11:'bk-bone',12:'bk-vine',13:'bk-wood',14:'bk-stone'};
+    var icoMap={10:'🧊',11:'🦴',12:'🌿',13:'🪵',14:'🪨'};
     if(clsMap[cell])w.classList.add(clsMap[cell]);
     var bEl=document.createElement('div');bEl.className='bi';bEl.textContent=icoMap[cell]||'?';w.appendChild(bEl);
     return;
@@ -788,10 +880,7 @@ function runCasc(combo){
   dmgBlockers(ms);
   if(pts>0&&combo<=3){var fc=ms[0],fcel=getC(fc.r,fc.c);if(fcel){var rc2=fcel.tb.getBoundingClientRect();floaty('+'+pts,rc2.left+rc2.width/2,rc2.top);}}
   if(combo>=3)floaty('🔥 x'+combo+'!',window.innerWidth/2,window.innerHeight/2-50);
-  if(pw){
-    var pwNames={rocket:'🚀 ROCKET CREATED!',bomb:'💣 BOMB CREATED!',rainbow:'🌈 RAINBOW CREATED!'};
-    floaty(pwNames[pw],window.innerWidth/2,window.innerHeight/2-80);
-  }
+  if(pw){var pwNames={rocket:'🚀 ROCKET!',bomb:'💣 BOMB!',rainbow:'🌈 RAINBOW!'};floaty(pwNames[pw],window.innerWidth/2,window.innerHeight/2-80);}
   hud();updateGoalUI();
   setTimeout(function(){
     ms.forEach(function(m){
@@ -867,8 +956,14 @@ function dmgBlockers(ms){
       var k=nr+','+nc;if(hit[k])return;hit[k]=true;
       var cel=getC(nr,nc);var t=grid[nr][nc];
       var rc2=cel?cel.tb.getBoundingClientRect():null;
-      if(t===BLK_STONE||t===BLK_WOOD){if(rc2)burst(rc2.left+rc2.width/2,rc2.top+rc2.height/2,'#AAAAAA');grid[nr][nc]=BLK_ICE;setTimeout(function(){syncCell(nr,nc);},200);}
-      else{if(rc2)burst(rc2.left+rc2.width/2,rc2.top+rc2.height/2,'#FFD700');setTimeout(function(){grid[nr][nc]=null;syncCell(nr,nc);},180);}
+      if(t===BLK_STONE||t===BLK_WOOD){
+        if(rc2)burst(rc2.left+rc2.width/2,rc2.top+rc2.height/2,'#AAAAAA');
+        grid[nr][nc]=BLK_ICE;
+        setTimeout(function(){syncCell(nr,nc);},200);
+      }else{
+        if(rc2)burst(rc2.left+rc2.width/2,rc2.top+rc2.height/2,'#FFD700');
+        setTimeout(function(){grid[nr][nc]=null;syncCell(nr,nc);},180);
+      }
     });
   });
 }
@@ -1049,17 +1144,14 @@ function onPD(e){
   if(actBst>=0){if(!cB(r,c))applyBst(actBst,r,c);actBst=-1;document.querySelectorAll('.bs-btn').forEach(function(b){b.classList.remove('on');});return;}
   if(cB(r,c))return;
   var cell=grid[r][c];
-  /* Tap power tile — show tooltip then activate */
   if(cell&&typeof cell==='object'&&cell.power){
-    /* Check if we had a previous selection that is also a power tile — COMBO! */
     if(selR>=0&&selC>=0&&Math.abs(r-selR)+Math.abs(c-selC)===1){
       var prevCell=grid[selR][selC];
       if(prevCell&&typeof prevCell==='object'&&prevCell.power){
         var combo=getPowerCombo(cell.power,prevCell.power);
         if(combo){
           locked=true;clearSel();
-          var type=cell.type;
-          var pr=selR,pc=selC;
+          var type=cell.type;var pr=selR,pc=selC;
           grid[r][c]=null;grid[pr][pc]=null;
           syncCell(r,c);syncCell(pr,pc);
           movesLeft--;hud();
@@ -1068,9 +1160,6 @@ function onPD(e){
         }
       }
     }
-    /* Single tap — show tooltip */
-    showTip(cell.power);
-    /* Also activate on second tap */
     if(selR===r&&selC===c){
       locked=true;clearSel();
       var pw=cell.power,type=cell.type;
@@ -1112,7 +1201,6 @@ function clearSel(){if(selR>=0){var cel=getC(selR,selC);if(cel)cel.w.classList.r
 
 function doSwap(r1,c1,r2,c2){
   if(locked)return;
-  /* Check power combo swap */
   var c1cell=grid[r1][c1],c2cell=grid[r2][c2];
   if(c1cell&&typeof c1cell==='object'&&c1cell.power&&c2cell&&typeof c2cell==='object'&&c2cell.power){
     var combo=getPowerCombo(c1cell.power,c2cell.power);
@@ -1268,7 +1356,7 @@ function showLose(isTime){
 
 function buyMoves(){
   if(coins>=900){coins-=900;if(cfg&&cfg.isTimer)timerVal+=30;else movesLeft+=5;document.getElementById('ov-l').classList.remove('on');locked=false;hud();if(cfg&&cfg.isTimer)startTimer();}
-  else floaty('Not enough coins! 😢',window.innerWidth/2,window.innerHeight/2);
+  else floaty('Not enough coins!',window.innerWidth/2,window.innerHeight/2);
 }
 
 function failLevel(){document.getElementById('ov-l').classList.remove('on');initGame();}
@@ -1287,7 +1375,7 @@ function initGame(){
   locked=false;selR=selC=-1;actBst=-1;
   document.querySelectorAll('.bs-btn').forEach(function(b){b.classList.remove('on');});
   ['st0','st1','st2'].forEach(function(id){document.getElementById(id).className='st-ic';});
-  clearHt();hideTip();buildGrid();
+  clearHt();buildGrid();
   document.getElementById('lv-img').src=IMGS[cfg.focus%NT];
   buildBoard();hud();buildGoalRows();updateGoalUI();buildPuzzleGrid();
   document.getElementById('ov-w').classList.remove('on');
