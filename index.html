@@ -1,4 +1,4 @@
- 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +8,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none;font-family:'Arial Rounded MT Bold','Arial',sans-serif;background:#000;}
-
 #splash{position:fixed;inset:0;z-index:900;background:linear-gradient(135deg,#000,#1a1a1a,#000);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
 #splash.hide{display:none;}
 .sp-logo .l1{font-size:3.5rem;font-weight:900;color:#FFD700;text-shadow:3px 3px 0 #111;display:block;letter-spacing:3px;text-align:center;}
@@ -18,10 +17,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .sp-tile img{width:100%;height:100%;object-fit:cover;display:block;}
 .sp-play{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:1.6rem;font-weight:900;padding:16px 60px;border-radius:50px;border:3px solid rgba(255,255,255,.4);cursor:pointer;box-shadow:0 7px 0 #7A4000;letter-spacing:2px;}
 .sp-play:active{transform:translateY(5px);box-shadow:0 2px 0 #7A4000;}
-
 #wrap{position:fixed;inset:0;display:flex;flex-direction:column;background:#000;}
-
-/* TOP BAR */
 #topbar{background:#111;border-bottom:3px solid #FFD700;padding:4px 8px;display:flex;align-items:center;gap:5px;flex-shrink:0;height:58px;}
 .top-logo{flex-shrink:0;min-width:80px;cursor:pointer;}
 .top-logo .tl1{font-size:1.2rem;font-weight:900;color:#FFD700;line-height:1;}
@@ -42,10 +38,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .tm-val{font-size:1.6rem;font-weight:900;color:#fff;line-height:1;}
 .tm-val.urgent{color:#FF3366;}
 .gear{width:36px;height:36px;flex-shrink:0;background:#222;border-radius:50%;border:2px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;}
-
 #middle{flex:1;display:flex;overflow:hidden;min-height:0;}
-
-/* LEFT PANEL */
 #lp{width:100px;flex-shrink:0;display:flex;flex-direction:column;gap:5px;padding:5px 4px;background:#111;border-right:2px solid #FFD700;}
 .lv-card{background:#1a1a1a;border:2px solid #FFD700;border-radius:14px;padding:4px;text-align:center;}
 .lv-art{width:100%;height:64px;border-radius:10px;background:#222;border:2px solid #FFD700;margin-bottom:2px;overflow:hidden;}
@@ -77,21 +70,35 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .bs-ico.g{background:#0055CC;}
 .bs-name{font-size:.36rem;color:#FFE566;font-weight:900;flex:1;line-height:1.2;}
 .bs-cnt{font-size:.4rem;font-weight:900;color:#fff;background:#CC0044;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;position:absolute;top:-6px;right:-6px;}
-
-/* BOARD */
 #board-area{flex:1;display:flex;align-items:center;justify-content:center;padding:5px;min-width:0;min-height:0;}
 #frame-outer{padding:5px;border-radius:22px;background:linear-gradient(145deg,#FFE566,#FF8C00,#FFD700,#FF6600,#FFE566);box-shadow:0 0 0 3px #111,0 6px 24px rgba(0,0,0,.8);}
 #frame-inner{border-radius:18px;padding:4px;background:#111;}
 #board-wrap{border-radius:14px;padding:5px;background:#1a1a1a;position:relative;overflow:hidden;}
 #board{display:grid;position:relative;z-index:1;}
 
-/* TILES */
+/* TILES - NO YELLOW BOX */
 .tw{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.tb{position:absolute;inset:2px;border-radius:10px;background:#222;border:2px solid rgba(255,215,0,.3);box-shadow:inset 0 1px 4px rgba(255,255,255,.08),0 3px 0 rgba(0,0,0,.7);z-index:1;overflow:hidden;}
-.ta{position:absolute;inset:2px;border-radius:8px;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:transparent;z-index:3;pointer-events:none;will-change:transform,opacity;overflow:hidden;}
-.ts{position:absolute;top:2px;left:3px;right:3px;height:38%;background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,0));border-radius:8px 8px 50% 50%;pointer-events:none;z-index:20;}
+.tb{
+  position:absolute;inset:2px;border-radius:10px;
+  background:#222;
+  /* FIX: removed gold border — now subtle transparent border only */
+  border:2px solid rgba(255,255,255,.06);
+  box-shadow:inset 0 1px 3px rgba(255,255,255,.06),0 3px 0 rgba(0,0,0,.7);
+  z-index:1;overflow:hidden;
+}
+.ta{
+  position:absolute;inset:0;border-radius:8px;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  background-color:transparent;
+  z-index:3;pointer-events:none;will-change:transform,opacity;overflow:hidden;
+}
+.ts{position:absolute;top:2px;left:3px;right:3px;height:38%;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0));border-radius:8px 8px 50% 50%;pointer-events:none;z-index:20;}
 
-.tw.sel .tb{border-color:#FFD700!important;box-shadow:0 0 0 2px rgba(255,215,0,.9),0 0 16px rgba(255,215,0,.7)!important;}
+/* SELECTED — gold ring only on selected */
+.tw.sel .tb{
+  border-color:#FFD700!important;
+  box-shadow:0 0 0 2px rgba(255,215,0,.9),0 0 16px rgba(255,215,0,.7)!important;
+}
 .tw.sel .ta{transform:translateY(-2px) scale(1.05);}
 .tw.ht .ta{animation:htA .6s infinite alternate;}
 @keyframes htA{from{filter:brightness(1);}to{filter:brightness(1.4) drop-shadow(0 0 8px rgba(255,240,50,.8));}}
@@ -107,7 +114,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .bk-stone .tb{background:linear-gradient(155deg,#888,#333)!important;border-color:#aaa!important;}
 .pw-badge{position:absolute;bottom:3px;right:2px;font-size:.45em;z-index:25;background:rgba(0,0,0,.7);border-radius:3px;padding:0 2px;line-height:1.3;pointer-events:none;}
 
-/* RIGHT PANEL */
 #rp{width:100px;flex-shrink:0;display:flex;flex-direction:column;gap:5px;padding:5px 4px;background:#111;border-left:2px solid #FFD700;}
 .gallery-card{background:linear-gradient(180deg,#FFE566,#FF9900);border:2px solid #111;border-radius:14px;padding:4px;flex:1;display:flex;flex-direction:column;}
 .gallery-head{font-size:.4rem;font-weight:900;color:#111;text-transform:uppercase;letter-spacing:1px;text-align:center;margin-bottom:2px;}
@@ -132,8 +138,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .sh-coin{font-size:1.3rem;line-height:1;}
 .sh-val{font-size:.85rem;font-weight:900;color:#FFD700;margin-bottom:2px;}
 .sh-add{background:#00AA33;color:#fff;font-size:.46rem;font-weight:900;padding:3px 10px;border-radius:6px;border:1.5px solid rgba(255,255,255,.3);cursor:pointer;display:inline-block;}
-
-/* BOTTOM BAR */
 #botbar{background:#111;border-top:3px solid #FFD700;padding:5px 6px;display:flex;align-items:center;gap:3px;flex-shrink:0;height:78px;}
 .pause-btn{width:48px;height:48px;flex-shrink:0;background:#222;border-radius:50%;border:2px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 0 #444;}
 .pause-btn:active{transform:translateY(3px);}
@@ -151,8 +155,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 #bb0:active{box-shadow:0 1px 0 #880011;}#bb1:active{box-shadow:0 1px 0 #883300;}
 #bb2:active{box-shadow:0 1px 0 #004411;}#bb3:active{box-shadow:0 1px 0 #001166;}
 #bb4:active{box-shadow:0 1px 0 #330055;}#bb5:active{box-shadow:0 1px 0 #554400;}
-
-/* BOSS */
 #boss-intro{display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
 #boss-intro.on{display:flex;}
 .boss-skull{font-size:5rem;animation:bSk 1s infinite alternate;}
@@ -160,8 +162,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .boss-ttl{font-size:2.2rem;font-weight:900;color:#FF4444;text-align:center;}
 .boss-sub{font-size:.85rem;color:#FF8888;text-align:center;}
 .boss-btn{background:linear-gradient(180deg,#FF5555,#AA0000);color:#fff;font-size:.95rem;font-weight:900;padding:12px 36px;border-radius:24px;border:3px solid rgba(255,255,255,.3);cursor:pointer;box-shadow:0 6px 0 #660000;}
-
-/* PUZZLE COMPLETE */
 #pz-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:550;align-items:center;justify-content:center;}
 #pz-ov.on{display:flex;}
 .pz-box{background:#111;border:3px solid #FFD700;border-radius:24px;padding:22px;text-align:center;width:88%;max-width:320px;animation:bxIn .4s cubic-bezier(.22,1,.36,1);}
@@ -175,8 +175,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .pz-prize-val{font-size:.65rem;font-weight:900;color:#FFD700;margin-top:1px;}
 .pz-prize-lbl{font-size:.3rem;color:#aaa;text-transform:uppercase;}
 .pz-btn{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:.9rem;font-weight:900;padding:12px 32px;border-radius:24px;border:3px solid rgba(255,255,255,.3);cursor:pointer;box-shadow:0 6px 0 #7A4000;}
-
-/* WIN/LOSE */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;align-items:center;justify-content:center;}
 .ov.on{display:flex;}
 .ov-box{background:#111;border:3px solid #FFD700;border-radius:24px;padding:24px 28px;text-align:center;width:88%;max-width:310px;animation:bxIn .4s cubic-bezier(.22,1,.36,1);}
@@ -201,8 +199,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .l-m{font-size:.78rem;color:#FFD700;font-weight:700;margin-bottom:7px;}
 .l-b1{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:.78rem;font-weight:900;padding:10px;border-radius:18px;border:2px solid rgba(255,255,255,.25);cursor:pointer;display:block;width:100%;margin-bottom:6px;box-shadow:0 5px 0 #7A4000;}
 .l-b2{background:rgba(255,255,255,.05);color:#888;font-size:.62rem;padding:6px;border-radius:10px;border:1px solid rgba(255,255,255,.07);cursor:pointer;width:100%;}
-
-/* LEVEL MAP */
 #lvl-map{display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:480;align-items:center;justify-content:center;}
 #lvl-map.on{display:flex;}
 .map-box{background:#111;border:3px solid #FFD700;border-radius:24px;padding:18px;text-align:center;width:92%;max-width:380px;max-height:85vh;overflow-y:auto;}
@@ -217,8 +213,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .map-node.timer-node{border-color:#00AAFF!important;}
 .map-star{position:absolute;top:-3px;right:-3px;font-size:.42rem;}
 .map-close{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:.8rem;font-weight:900;padding:9px 24px;border-radius:18px;border:2px solid rgba(255,255,255,.25);cursor:pointer;box-shadow:0 4px 0 #7A4000;}
-
-/* PARTICLES */
 .pt{position:fixed;border-radius:50%;pointer-events:none;z-index:700;animation:ptf .5s ease-out forwards;}
 @keyframes ptf{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0);}}
 .fl{position:fixed;pointer-events:none;z-index:701;font-size:.9rem;font-weight:900;color:#FFD700;text-shadow:0 1px 4px rgba(0,0,0,.8);animation:fla .85s ease-out forwards;white-space:nowrap;transform:translateX(-50%);}
@@ -226,7 +220,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .cf{position:fixed;pointer-events:none;z-index:702;animation:cfl linear forwards;}
 @keyframes cfl{0%{opacity:1;transform:translateY(0) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(540deg);}}
 #lvl-banner{display:none;position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:400;background:linear-gradient(180deg,#FFD700,#FF8C00);border:2px solid #111;border-radius:18px;padding:7px 24px;font-size:1rem;font-weight:900;color:#111;box-shadow:0 5px 0 #7A4000;}
-
 @media(max-width:560px){
   #lp,#rp{width:76px;}
   .lv-art{height:48px;}
@@ -239,19 +232,14 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 </style>
 </head>
 <body>
-
 <div id="splash">
   <div class="sp-logo"><span class="l1">👑 PUFFY</span><span class="l2">ANIMALS QUEST</span></div>
   <div class="sp-animals" id="spa"></div>
   <button class="sp-play" id="spb">▶ PLAY NOW</button>
 </div>
-
 <div id="wrap">
   <div id="topbar">
-    <div class="top-logo" onclick="showMap()">
-      <div class="tl1">👑 PUFFY</div>
-      <div class="tl2">ANIMALS</div>
-    </div>
+    <div class="top-logo" onclick="showMap()"><div class="tl1">👑 PUFFY</div><div class="tl2">ANIMALS</div></div>
     <div id="goal-strip">
       <div class="g-label">GOAL</div>
       <div class="g-item"><div class="g-ico"><img id="gi0"/></div><div class="g-cnt" id="gc0">0</div></div>
@@ -264,7 +252,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
     <div id="mv-box"><div class="mv-lbl">MOVES</div><div class="mv-val" id="mv-val">28</div></div>
     <div class="gear" onclick="showMap()">🗺️</div>
   </div>
-
   <div id="middle">
     <div id="lp">
       <div class="lv-card" id="lv-badge">
@@ -291,17 +278,9 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
         </div>
       </div>
     </div>
-
     <div id="board-area">
-      <div id="frame-outer">
-        <div id="frame-inner">
-          <div id="board-wrap">
-            <div id="board"></div>
-          </div>
-        </div>
-      </div>
+      <div id="frame-outer"><div id="frame-inner"><div id="board-wrap"><div id="board"></div></div></div></div>
     </div>
-
     <div id="rp">
       <div class="gallery-card">
         <div class="gallery-head">🎨 ART GALLERY</div>
@@ -309,10 +288,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
         <div class="puzzle-grid" id="pz-grid"></div>
         <div class="gallery-prog"><div class="gallery-prog-fill" id="gal-fill" style="width:0%"></div></div>
         <div class="gallery-pieces" id="gal-pieces">0/16</div>
-        <div class="gallery-prize">
-          <div class="gallery-prize-lbl">🏆 Prize</div>
-          <div class="gallery-prize-val" id="gal-prize">500🪙+3🔨</div>
-        </div>
+        <div class="gallery-prize"><div class="gallery-prize-lbl">🏆 Prize</div><div class="gallery-prize-val" id="gal-prize">500🪙+3🔨</div></div>
       </div>
       <div class="sh-card">
         <div class="sh-lbl">SHOP</div>
@@ -322,7 +298,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
       </div>
     </div>
   </div>
-
   <div id="botbar">
     <div class="pause-btn" onclick="showMap()">🗺️</div>
     <button class="bb" id="bb0" onclick="botBst(0)"><div class="bb-ico">+5</div><div class="bb-lbl">MORE MOVES</div><div class="bb-cost">🪙100</div></button>
@@ -333,14 +308,12 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
     <button class="bb" id="bb5" onclick="botBst(5)"><div class="bb-ico">⭐</div><div class="bb-lbl">LUCKY STAR</div><div class="bb-cost">🪙120</div></button>
   </div>
 </div>
-
 <div id="boss-intro">
   <div class="boss-skull">💀</div>
   <div class="boss-ttl" id="boss-ttl">BOSS LEVEL!</div>
   <div class="boss-sub">Clear all stone blockers to win!</div>
   <button class="boss-btn" onclick="startBoss()">⚔️ FIGHT!</button>
 </div>
-
 <div id="pz-ov">
   <div class="pz-box">
     <div class="w-tph">🎨</div>
@@ -355,7 +328,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
     <button class="pz-btn" onclick="claimPuzzlePrize()">🎁 CLAIM PRIZE!</button>
   </div>
 </div>
-
 <div class="ov" id="ov-w"><div class="ov-box" id="win-box">
   <div class="w-tph" id="win-tph">🏆</div>
   <div class="w-ttl" id="win-ttl">Level Complete!</div>
@@ -364,7 +336,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   <div class="w-pz"><div class="w-pz-lbl">🎨 Art Gallery</div><div class="w-pz-grid" id="w-pz-grid"></div></div>
   <button class="w-btn" id="wb">Next Level ➡️</button>
 </div></div>
-
 <div class="ov" id="ov-l"><div class="ov-box">
   <div class="l-ico">😢</div>
   <div class="l-ttl" id="l-ttl">Out of Moves!</div>
@@ -373,7 +344,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   <button class="l-b1" onclick="buyMoves()">🪙 Use 900 Coins</button>
   <button class="l-b2" onclick="failLevel()">Give Up</button>
 </div></div>
-
 <div id="lvl-map">
   <div class="map-box">
     <div class="map-ttl">🗺️ Level Map</div>
@@ -381,10 +351,9 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
     <button class="map-close" onclick="closeMap()">▶ PLAY LEVEL <span id="map-curr-lbl">1</span></button>
   </div>
 </div>
-
 <div id="lvl-banner"></div>
-
 <script>
+/* ══ EXACT GITHUB FILENAMES ══ */
 var IMGS=['Lion.PNG','Hearth.jpg.PNG','Cat.jpg.PNG','Dove.jpg.PNG','Dog.jpg 2.PNG'];
 var NAMES=['Lion','Heart','Cat','Dove','Dog'];
 var COLORS=['#FF8C00','#FF0044','#8800CC','#0044CC','#FF6600'];
@@ -535,7 +504,8 @@ function syncCell(r,c){
   var bi=w.querySelector('.bi');if(bi)w.removeChild(bi);
   var pb=w.querySelector('.pw-badge');if(pb)w.removeChild(pb);
   w.className='tw';
-  ta.style.cssText='position:absolute;inset:2px;border-radius:8px;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:transparent;z-index:3;pointer-events:none;will-change:transform,opacity;overflow:hidden;';
+  /* FIX: ta always transparent background */
+  ta.style.cssText='position:absolute;inset:0;border-radius:8px;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:transparent;z-index:3;pointer-events:none;will-change:transform,opacity;overflow:hidden;';
   tb.className='tb';
   if(cell==null){ta.style.opacity='0';return;}
   if(typeof cell==='number'){
