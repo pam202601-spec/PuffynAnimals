@@ -8,7 +8,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none;font-family:'Arial Rounded MT Bold','Arial',sans-serif;background:#000;}
-
 .screen{position:fixed;inset:0;z-index:800;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;}
 .screen.on{display:flex;}
 
@@ -142,10 +141,11 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 #bb5{background:linear-gradient(180deg,#DDCC11,#997700);box-shadow:0 5px 0 #554400;}
 #bb0:active,#bb1:active,#bb2:active,#bb3:active,#bb4:active,#bb5:active{box-shadow:0 1px 0 rgba(0,0,0,.5);}
 
-/* ══ PAINT BY NUMBER SCREEN ══ */
+/* ══════════════════════════════
+   PAINT BY NUMBER SCREEN
+══════════════════════════════ */
 #scr-pbn{background:#000;flex-direction:column;align-items:stretch;justify-content:flex-start;}
 
-/* PBN Top bar */
 #pbn-bar{background:#000;border-bottom:3px solid #FFD700;padding:6px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .pbn-title{font-size:1rem;font-weight:900;color:#FFD700;flex:1;}
 .pbn-info{background:#111;border:2px solid #FFD700;border-radius:10px;padding:3px 12px;text-align:center;}
@@ -153,155 +153,204 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 .pbn-info-val{font-size:1.3rem;font-weight:900;color:#FFD700;line-height:1;}
 .pbn-close{width:36px;height:36px;background:#111;border-radius:50%;border:2px solid #FFD700;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;}
 
-/* PBN Canvas area */
-#pbn-canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;}
-#pbn-canvas{display:grid;gap:3px;}
+/* Canvas wrapper — transitions from grid to mosaic */
+#pbn-canvas-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;position:relative;}
 
-/* PBN Cell — starts BLANK GREY */
-.pbn-cell{
+/* The grid itself */
+#pbn-canvas{
+  display:grid;
+  gap:3px;
+  transition:gap .5s ease, box-shadow .5s ease, border-radius .5s ease;
   border-radius:8px;
+  overflow:hidden;
+}
+
+/* COMPLETE STATE — gaps close, becomes one painting */
+#pbn-canvas.complete{
+  gap:0px!important;
+  box-shadow:0 0 0 5px #FFD700, 0 0 40px rgba(255,215,0,.8), 0 0 80px rgba(255,140,0,.4)!important;
+  border-radius:12px!important;
+  animation:paintingReveal .8s cubic-bezier(.22,1,.36,1);
+}
+@keyframes paintingReveal{
+  0%{transform:scale(.85);opacity:.5;}
+  60%{transform:scale(1.05);}
+  100%{transform:scale(1);opacity:1;}
+}
+
+/* PBN Cell */
+.pbn-cell{
+  border-radius:6px;
   display:flex;
   align-items:center;
   justify-content:center;
   position:relative;
   overflow:hidden;
   cursor:pointer;
-  /* Blank grey start */
   background:#2a2a2a;
   border:2px solid #444;
-  transition:background .2s, border-color .2s;
+  transition:background .2s, border-color .2s, border-radius .5s;
 }
-/* Number shown in center */
+
+/* When complete — remove individual cell borders and radius */
+#pbn-canvas.complete .pbn-cell{
+  border:none!important;
+  border-radius:0!important;
+}
+
 .pbn-num{
-  font-size:1.4em;
+  font-size:1.3em;
   font-weight:900;
-  color:rgba(255,255,255,.5);
+  color:rgba(255,255,255,.55);
   pointer-events:none;
   z-index:2;
   position:absolute;
-  text-shadow:0 1px 3px rgba(0,0,0,.8);
+  text-shadow:0 1px 3px rgba(0,0,0,.9);
+  transition:opacity .3s;
 }
-/* Color dot hint in corner — very subtle */
 .pbn-dot{
   position:absolute;
-  bottom:3px;
-  right:3px;
-  width:28%;
-  height:28%;
+  bottom:3px;right:3px;
+  width:26%;height:26%;
   border-radius:50%;
-  opacity:.22;
+  opacity:.2;
   pointer-events:none;
   z-index:1;
+  transition:opacity .3s;
 }
-/* Animal image — hidden until filled */
 .pbn-img{
   position:absolute;
   inset:0;
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   object-fit:cover;
-  border-radius:6px;
+  border-radius:4px;
   opacity:0;
-  transition:opacity .3s;
+  transition:opacity .35s;
   z-index:3;
   pointer-events:none;
 }
-/* FILLED state */
+
+/* FILLED */
 .pbn-cell.filled{
   background:#111;
-  border-color:rgba(255,215,0,.5);
+  border-color:rgba(255,215,0,.3);
   cursor:default;
 }
-.pbn-cell.filled .pbn-num{display:none;}
-.pbn-cell.filled .pbn-dot{display:none;}
+.pbn-cell.filled .pbn-num{opacity:0;}
+.pbn-cell.filled .pbn-dot{opacity:0;}
 .pbn-cell.filled .pbn-img{opacity:1;}
-/* Shine on filled */
 .pbn-cell.filled::after{
   content:'';
-  position:absolute;
-  top:0;left:0;right:0;
+  position:absolute;top:0;left:0;right:0;
   height:40%;
-  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0));
-  border-radius:6px 6px 50% 50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,0));
+  border-radius:4px 4px 50% 50%;
   pointer-events:none;
   z-index:10;
+  transition:opacity .5s;
 }
+
+/* When complete — remove shine overlay per cell */
+#pbn-canvas.complete .pbn-cell.filled::after{opacity:0;}
+
 /* WRONG shake */
 .pbn-cell.wrong{animation:wrongShake .35s ease;}
-@keyframes wrongShake{0%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}100%{transform:translateX(0);border-color:#FF3366;}}
-/* HOVER */
-.pbn-cell:not(.filled):hover{border-color:rgba(255,215,0,.5);background:#333;}
+@keyframes wrongShake{0%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}100%{transform:translateX(0);}}
 
-/* PBN Progress bar */
+.pbn-cell:not(.filled):hover{border-color:rgba(255,215,0,.6);background:#333;}
+
+/* Progress bar */
 #pbn-prog-wrap{padding:0 12px 6px;flex-shrink:0;}
 .pbn-prog-bar{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;border:1px solid rgba(255,215,0,.25);margin-bottom:4px;}
 .pbn-prog-fill{height:100%;background:linear-gradient(90deg,#FF6600,#FFD700);border-radius:5px;transition:width .4s;}
 .pbn-prog-txt{font-size:.58rem;font-weight:900;color:#FFD700;text-align:center;}
 
-/* PBN Palette */
+/* Palette */
 #pbn-palette-wrap{background:#000;border-top:3px solid #FFD700;padding:6px 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;overflow-x:auto;}
 .pbn-pal-lbl{font-size:.46rem;font-weight:900;color:#FFD700;text-transform:uppercase;letter-spacing:1px;flex-shrink:0;}
 .pbn-pal-btn{
-  flex-shrink:0;
-  width:62px;
-  height:62px;
-  border-radius:14px;
-  border:3px solid rgba(255,255,255,.2);
-  overflow:hidden;
-  cursor:pointer;
-  position:relative;
+  flex-shrink:0;width:62px;height:62px;
+  border-radius:14px;border:3px solid rgba(255,255,255,.2);
+  overflow:hidden;cursor:pointer;position:relative;
   box-shadow:0 4px 0 rgba(0,0,0,.6);
   transition:transform .08s,box-shadow .08s,border-color .1s;
   background:#111;
 }
 .pbn-pal-btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.6);}
-.pbn-pal-btn.sel{
-  border-color:#FFD700!important;
-  box-shadow:0 4px 0 rgba(0,0,0,.6),0 0 18px rgba(255,215,0,.9)!important;
-  transform:translateY(-3px) scale(1.08);
-}
+.pbn-pal-btn.sel{border-color:#FFD700!important;box-shadow:0 4px 0 rgba(0,0,0,.6),0 0 18px rgba(255,215,0,.9)!important;transform:translateY(-3px) scale(1.08);}
 .pbn-pal-btn img{width:100%;height:100%;object-fit:cover;display:block;}
-/* Number badge on palette button */
-.pbn-pal-num{
-  position:absolute;
-  top:-5px;left:-5px;
-  width:20px;height:20px;
-  background:#FFD700;
-  color:#111;
-  font-size:.42rem;
-  font-weight:900;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  border:2px solid #111;
-  z-index:5;
-}
-/* Remaining count badge */
-.pbn-pal-cnt{
-  position:absolute;
-  bottom:-5px;right:-5px;
-  background:#FF3366;
-  color:#fff;
-  font-size:.38rem;
-  font-weight:900;
-  border-radius:50%;
-  width:18px;height:18px;
-  display:flex;align-items:center;justify-content:center;
-  border:1.5px solid #fff;
-  z-index:5;
-}
+.pbn-pal-num{position:absolute;top:-5px;left:-5px;width:20px;height:20px;background:#FFD700;color:#111;font-size:.42rem;font-weight:900;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #111;z-index:5;}
+.pbn-pal-cnt{position:absolute;bottom:-5px;right:-5px;background:#FF3366;color:#fff;font-size:.38rem;font-weight:900;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;z-index:5;}
 .pbn-pal-cnt.done{background:#00CC44;}
 
-/* PBN WIN OVERLAY */
-#pbn-win{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:920;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+/* ══════════════════════════════
+   PBN WIN OVERLAY
+   Shows the COMPLETED MOSAIC full size
+══════════════════════════════ */
+#pbn-win{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.96);
+  z-index:950;
+  align-items:center;justify-content:center;flex-direction:column;
+  gap:10px;
+  padding:16px;
+}
 #pbn-win.on{display:flex;}
-.pbn-win-art{border:4px solid #FFD700;border-radius:16px;overflow:hidden;box-shadow:0 0 40px rgba(255,215,0,.7);animation:artReveal .8s cubic-bezier(.22,1,.36,1);}
-@keyframes artReveal{from{transform:scale(.3) rotate(-10deg);opacity:0;}to{transform:none;opacity:1;}}
-.pbn-win-title{font-size:2rem;font-weight:900;color:#FFD700;text-align:center;text-shadow:3px 3px 0 #333;}
-.pbn-win-sub{font-size:.75rem;color:#FF88FF;text-align:center;font-weight:900;letter-spacing:2px;}
-.pbn-win-rewards{display:flex;gap:8px;justify-content:center;}
+
+.pbn-win-header{text-align:center;}
+.pbn-win-emoji{font-size:3rem;display:block;margin-bottom:4px;animation:emojiPop .6s cubic-bezier(.22,1,.36,1);}
+@keyframes emojiPop{from{transform:scale(0) rotate(-180deg);}70%{transform:scale(1.3) rotate(8deg);}to{transform:scale(1) rotate(0);}}
+.pbn-win-title{font-size:1.8rem;font-weight:900;color:#FFD700;text-shadow:3px 3px 0 #333;}
+.pbn-win-sub{font-size:.75rem;color:#FF88FF;font-weight:900;letter-spacing:2px;margin-top:3px;}
+
+/* THE COMPLETED MOSAIC — no gaps, seamlessly joined tiles */
+#pbn-mosaic-wrap{
+  position:relative;
+  border:5px solid #FFD700;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 30px rgba(255,215,0,.8),
+    0 0 70px rgba(255,140,0,.4),
+    0 20px 40px rgba(0,0,0,.7);
+  animation:mosaicReveal .9s cubic-bezier(.22,1,.36,1);
+  flex-shrink:0;
+}
+@keyframes mosaicReveal{
+  0%{transform:scale(.4) rotate(-5deg);opacity:0;}
+  65%{transform:scale(1.06) rotate(1deg);}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+/* Shine overlay on the whole mosaic */
+#pbn-mosaic-wrap::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,.06) 100%);
+  pointer-events:none;
+  z-index:100;
+}
+#pbn-mosaic{
+  display:grid;
+  gap:0; /* NO GAPS — tiles merge into one painting */
+}
+/* Each mosaic cell is a seamless tile */
+.mosaic-cell{
+  overflow:hidden;
+  display:block;
+}
+.mosaic-cell img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.pbn-win-rewards{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 .pbn-win-rew{background:rgba(255,255,255,.08);border:2px solid rgba(255,215,0,.4);border-radius:12px;padding:8px 14px;text-align:center;}
 .pbn-win-rew-ico{font-size:1.5rem;}
 .pbn-win-rew-val{font-size:.75rem;font-weight:900;color:#FFD700;}
+
 .pbn-win-btn{background:linear-gradient(180deg,#FFE44D,#FF9900);color:#111;font-size:1rem;font-weight:900;padding:14px 36px;border-radius:22px;border:3px solid rgba(255,255,255,.3);cursor:pointer;box-shadow:0 6px 0 #7A4000;}
 .pbn-win-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #7A4000;}
 
@@ -465,7 +514,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
 <!-- ══════════ PAINT BY NUMBER ══════════ -->
 <div class="screen" id="scr-pbn">
   <div id="pbn-bar">
-    <div>
+    <div style="flex:1;">
       <div class="pbn-title" id="pbn-title">🎨 Paint by Number</div>
       <div style="font-size:.5rem;color:#FF88FF;font-weight:900;" id="pbn-painting-name">Painting 1</div>
     </div>
@@ -478,7 +527,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   </div>
   <div id="pbn-prog-wrap">
     <div class="pbn-prog-bar"><div class="pbn-prog-fill" id="pbn-prog-fill" style="width:0%"></div></div>
-    <div class="pbn-prog-txt" id="pbn-prog-txt">Tap a color below, then tap the matching numbered cells!</div>
+    <div class="pbn-prog-txt" id="pbn-prog-txt">Pick a color below, then tap matching numbered cells!</div>
   </div>
   <div id="pbn-palette-wrap">
     <div class="pbn-pal-lbl">🎨 PICK:</div>
@@ -486,15 +535,21 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   </div>
 </div>
 
-<!-- PBN WIN -->
+<!-- ══════════ PBN WIN — MOSAIC REVEAL ══════════ -->
 <div id="pbn-win">
-  <div class="pbn-win-title" id="pbn-win-title">🎨 Painting Complete!</div>
-  <div class="pbn-win-sub" id="pbn-win-sub">RAINBOW GARDEN</div>
-  <div class="pbn-win-art" id="pbn-win-art"></div>
+  <div class="pbn-win-header">
+    <span class="pbn-win-emoji">🎨</span>
+    <div class="pbn-win-title">Painting Complete!</div>
+    <div class="pbn-win-sub" id="pbn-win-sub">RAINBOW GARDEN</div>
+  </div>
+  <!-- THE MOSAIC — no gaps, one unified painting -->
+  <div id="pbn-mosaic-wrap">
+    <div id="pbn-mosaic"></div>
+  </div>
   <div class="pbn-win-rewards">
     <div class="pbn-win-rew"><div class="pbn-win-rew-ico">🪙</div><div class="pbn-win-rew-val" id="pbn-win-coins">+400</div></div>
-    <div class="pbn-win-rew"><div class="pbn-win-rew-ico">🔨</div><div class="pbn-win-rew-val">+2</div></div>
-    <div class="pbn-win-rew"><div class="pbn-win-rew-ico">⭐</div><div class="pbn-win-rew-val">+3</div></div>
+    <div class="pbn-win-rew"><div class="pbn-win-rew-ico">🔨</div><div class="pbn-win-rew-val">+2 Hammers</div></div>
+    <div class="pbn-win-rew"><div class="pbn-win-rew-ico">⭐</div><div class="pbn-win-rew-val">+3 Stars</div></div>
   </div>
   <button class="pbn-win-btn" onclick="nextPbn()">🎨 Next Painting!</button>
 </div>
@@ -560,8 +615,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
       <div class="card" style="cursor:pointer;text-align:center;" onclick="startPbn()">
         <div class="card-lbl">🎨 PAINT BY #</div>
         <div style="font-size:2rem;">🖌️</div>
-        <div style="font-size:.48rem;color:#FF88FF;font-weight:900;">Tap to play!</div>
-        <div style="font-size:.42rem;color:#aaa;">Fill blank canvas</div>
+        <div style="font-size:.48rem;color:#FF88FF;font-weight:900;">Tap to paint!</div>
       </div>
       <div class="card" style="cursor:pointer;" onclick="showScreen('scr-trophy')">
         <div class="card-lbl">🏆 TROPHIES</div>
@@ -606,8 +660,7 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-s
   <button class="l-b2" onclick="failLevel()">Give Up</button>
 </div></div>
 <div id="myst-ov"><div class="myst-box">
-  <div class="myst-ico">🎁</div>
-  <div class="myst-ttl">Mystery Prize!</div>
+  <div class="myst-ico">🎁</div><div class="myst-ttl">Mystery Prize!</div>
   <div class="myst-prize" id="myst-prize">+300 Coins!</div>
   <button class="myst-btn" onclick="claimMystery()">🎉 CLAIM!</button>
 </div></div>
@@ -649,103 +702,35 @@ var PIECES=16,LVL_PER_PUZZLE=8,MAX_LEVELS=40,SAFETY_MS=8000;
 
 // ══════════════════════════════
 // PAINT BY NUMBER LEVELS
-// Each level defines a grid of numbers 0-4 (= which animal)
 // ══════════════════════════════
 var PBN_LEVELS=[
-  {
-    name:'Rainbow Garden',size:5,moves:50,
-    pattern:[
-      0,1,2,3,4,
-      1,0,3,2,1,
-      2,3,0,1,3,
-      3,2,1,0,2,
-      4,1,3,2,0
-    ]
-  },
-  {
-    name:'Ocean Dreams',size:5,moves:45,
-    pattern:[
-      3,3,1,3,3,
-      3,1,2,1,3,
-      1,2,0,2,1,
-      3,1,2,1,3,
-      3,3,1,3,3
-    ]
-  },
-  {
-    name:'City of Color',size:6,moves:45,
-    pattern:[
-      0,1,2,0,1,2,
-      1,0,1,2,0,1,
-      2,1,0,1,2,0,
-      0,2,1,0,1,2,
-      1,0,2,1,0,1,
-      2,1,0,2,1,0
-    ]
-  },
-  {
-    name:'Animal Kingdom',size:6,moves:40,
-    pattern:[
-      4,4,4,4,4,4,
-      4,0,1,2,3,4,
-      4,3,4,4,0,4,
-      4,2,4,4,1,4,
-      4,1,3,2,0,4,
-      4,4,4,4,4,4
-    ]
-  },
-  {
-    name:'Golden Trophy',size:6,moves:38,
-    pattern:[
-      2,0,1,2,0,1,
-      0,2,3,0,2,3,
-      1,3,4,1,3,4,
-      2,0,1,2,0,1,
-      0,2,3,0,2,3,
-      1,3,4,1,3,4
-    ]
-  },
-  {
-    name:'Heart of Britto',size:6,moves:35,
-    pattern:[
-      0,0,1,1,0,0,
-      0,1,2,2,1,0,
-      1,2,3,3,2,1,
-      1,2,3,3,2,1,
-      0,1,2,2,1,0,
-      0,0,1,1,0,0
-    ]
-  },
-  {
-    name:'Rainbow Star',size:6,moves:32,
-    pattern:[
-      0,1,2,3,4,0,
-      4,0,1,2,3,4,
-      3,4,0,1,2,3,
-      2,3,4,0,1,2,
-      1,2,3,4,0,1,
-      0,1,2,3,4,0
-    ]
-  }
+  {name:'Rainbow Garden',size:5,moves:50,pattern:[0,1,2,3,4,1,0,3,2,1,2,3,0,1,3,3,2,1,0,2,4,1,3,2,0]},
+  {name:'Ocean Dreams',size:5,moves:45,pattern:[3,3,1,3,3,3,1,2,1,3,1,2,0,2,1,3,1,2,1,3,3,3,1,3,3]},
+  {name:'City of Color',size:6,moves:45,pattern:[0,1,2,0,1,2,1,0,1,2,0,1,2,1,0,1,2,0,0,2,1,0,1,2,1,0,2,1,0,1,2,1,0,2,1,0]},
+  {name:'Animal Kingdom',size:6,moves:40,pattern:[4,4,4,4,4,4,4,0,1,2,3,4,4,3,4,4,0,4,4,2,4,4,1,4,4,1,3,2,0,4,4,4,4,4,4,4]},
+  {name:'Golden Trophy',size:6,moves:38,pattern:[2,0,1,2,0,1,0,2,3,0,2,3,1,3,4,1,3,4,2,0,1,2,0,1,0,2,3,0,2,3,1,3,4,1,3,4]},
+  {name:'Heart of Britto',size:6,moves:35,pattern:[0,0,1,1,0,0,0,1,2,2,1,0,1,2,3,3,2,1,1,2,3,3,2,1,0,1,2,2,1,0,0,0,1,1,0,0]},
+  {name:'Rainbow Star',size:6,moves:32,pattern:[0,1,2,3,4,0,4,0,1,2,3,4,3,4,0,1,2,3,2,3,4,0,1,2,1,2,3,4,0,1,0,1,2,3,4,0]}
 ];
 
 // ══════════════════════════════
 // PBN STATE
 // ══════════════════════════════
 var pbnLvl=0,pbnSelected=-1,pbnMoves=0,pbnFilled=0,pbnTotal=0,pbnGrid=[];
+var pbnCompleted=0,pbnCurrentPattern=[],pbnCurrentSize=0;
 
 // ══════════════════════════════
 // TROPHIES
 // ══════════════════════════════
 var TROPHIES=[
   {id:'first_win',ico:'🥇',name:'First Victory',desc:'Win your first level',type:'bronze',earned:false},
-  {id:'color_splash',ico:'🎨',name:'Color Splash',desc:'Make your first 3-match',type:'bronze',earned:false},
+  {id:'color_splash',ico:'🎨',name:'Color Splash',desc:'Make your first match',type:'bronze',earned:false},
   {id:'rainbow_vision',ico:'🌈',name:'Rainbow Vision',desc:'Create a rainbow tile',type:'silver',earned:false},
   {id:'golden_touch',ico:'💛',name:'Golden Touch',desc:'Get 3 stars on 5 levels',type:'gold',earned:false},
   {id:'streak3',ico:'🔥',name:'On Fire',desc:'Win 3 levels in a row',type:'silver',earned:false},
   {id:'boss_slayer',ico:'💀',name:'Boss Slayer',desc:'Defeat a boss level',type:'gold',earned:false},
   {id:'wipeout',ico:'💥',name:'Total Wipeout',desc:'Clear the entire board',type:'gold',earned:false},
-  {id:'art_collector',ico:'🖼️',name:'Art Collector',desc:'Complete first puzzle',type:'silver',earned:false},
+  {id:'art_collector',ico:'🖼️',name:'Art Collector',desc:'Complete first art puzzle',type:'silver',earned:false},
   {id:'painter',ico:'🖌️',name:'Master Painter',desc:'Complete a Paint by Number',type:'bronze',earned:false},
   {id:'pop_art_king',ico:'🎭',name:'Pop Art King',desc:'Complete 5 PBN paintings',type:'diamond',earned:false},
   {id:'ten_levels',ico:'🎯',name:'Dedicated Player',desc:'Complete 10 levels',type:'silver',earned:false},
@@ -755,7 +740,6 @@ var TROPHIES=[
 ];
 var totalTrophies=0;
 function earnTrophy(id){var t=TROPHIES.find(function(x){return x.id===id;});if(t&&!t.earned){t.earned=true;totalTrophies++;var tc=document.getElementById('trophy-count');if(tc)tc.textContent=totalTrophies+' earned';var tm=document.getElementById('trophy-mini');if(tm)tm.textContent=t.ico;showAch(t.ico,t.name+' Trophy!',t.desc);}}
-
 function buildTrophyRoom(){var shelf=document.getElementById('trophy-shelf');if(!shelf)return;shelf.innerHTML='';TROPHIES.forEach(function(t){var el=document.createElement('div');el.className='trophy-item'+(t.earned?'':' locked');el.innerHTML='<div class="trophy-ico">'+t.ico+'</div><div class="trophy-name">'+t.name+'</div><div class="trophy-desc">'+t.desc+'</div><div class="trophy-type '+t.type+'">'+t.type.toUpperCase()+'</div>';shelf.appendChild(el);});}
 
 // ══════════════════════════════
@@ -780,14 +764,14 @@ var settings={particles:true,hints:true};
 function buildSettings(){var sb=document.getElementById('settings-body');if(!sb)return;sb.innerHTML='';[{ico:'✨',name:'Particles',key:'particles'},{ico:'💡',name:'Hints',key:'hints'}].forEach(function(item){var el=document.createElement('div');el.style.cssText='display:flex;align-items:center;gap:10px;background:#111;border:2px solid #FFD700;border-radius:11px;padding:11px;margin-bottom:7px;';el.innerHTML='<div style="font-size:1.4rem;">'+item.ico+'</div><div style="flex:1;font-size:.7rem;font-weight:900;color:#FFD700;">'+item.name+'</div><div style="width:44px;height:24px;background:'+(settings[item.key]?'#00CC44':'#333')+';border-radius:12px;position:relative;cursor:pointer;" id="tog-'+item.key+'"><div style="position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:'+(settings[item.key]?'23':'3')+'px;transition:left .2s;"></div></div>';el.querySelector('#tog-'+item.key).onclick=function(){settings[item.key]=!settings[item.key];this.style.background=settings[item.key]?'#00CC44':'#333';this.querySelector('div').style.left=settings[item.key]?'23px':'3px';};sb.appendChild(el);});[{ico:'🔄',name:'Restart Level',fn:function(){showScreen('scr-game');initGame();}},{ico:'🎨',name:'Paint by Number',fn:function(){startPbn();}}].forEach(function(item){var el=document.createElement('div');el.style.cssText='display:flex;align-items:center;gap:10px;background:#111;border:2px solid #FFD700;border-radius:11px;padding:11px;margin-bottom:7px;cursor:pointer;';el.innerHTML='<div style="font-size:1.4rem;">'+item.ico+'</div><div style="flex:1;font-size:.7rem;font-weight:900;color:#FFD700;">'+item.name+'</div><div style="color:#FFD700;font-size:1.1rem;">›</div>';el.onclick=item.fn;sb.appendChild(el);});}
 
 // ══════════════════════════════
-// MAP
+// SCREEN + MAP
 // ══════════════════════════════
 var levelStars=[];
-function buildMap(){var mg=document.getElementById('map-grid');if(!mg)return;mg.innerHTML='';document.getElementById('map-lbl').textContent=lvlIdx+1;for(var i=0;i<MAX_LEVELS;i++){var isBoss=(i+1)%10===0,isTimed=(i+1)%3===0&&!isBoss,isPbn=(i+1)%5===0&&!isBoss&&!isTimed;var isDone=i<lvlIdx,isCurr=i===lvlIdx,isLk=i>lvlIdx;var node=document.createElement('div');node.className='map-node'+(isDone?' done':isCurr?' curr':' lk')+(isBoss?' boss':isTimed?' timed':isPbn?' pbn':'');if(isBoss)node.textContent='💀';else if(isTimed)node.textContent='⚡';else if(isPbn)node.textContent='🎨';else node.textContent=i+1;if(isDone&&levelStars[i]){var star=document.createElement('div');star.className='map-star';star.textContent=levelStars[i]===3?'⭐⭐⭐':levelStars[i]===2?'⭐⭐':'⭐';node.appendChild(star);}if(!isLk)(function(idx,pbn){node.addEventListener('click',function(){lvlIdx=idx;if(pbn){closeMap();startPbn();}else{closeMap();initGame();}});})(i,isPbn);mg.appendChild(node);}}
 function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});var el=document.getElementById(id);if(el)el.classList.add('on');if(id==='scr-trophy')buildTrophyRoom();if(id==='scr-shop')buildShop();if(id==='scr-settings')buildSettings();}
 function backToGame(){showScreen('scr-game');}
 function showMap(){if(!document.getElementById('scr-game').classList.contains('on'))return;buildMap();showScreen('scr-map');}
 function closeMap(){showScreen('scr-game');}
+function buildMap(){var mg=document.getElementById('map-grid');if(!mg)return;mg.innerHTML='';document.getElementById('map-lbl').textContent=lvlIdx+1;for(var i=0;i<MAX_LEVELS;i++){var isBoss=(i+1)%10===0,isTimed=(i+1)%3===0&&!isBoss,isPbn=(i+1)%5===0&&!isBoss&&!isTimed;var isDone=i<lvlIdx,isCurr=i===lvlIdx,isLk=i>lvlIdx;var node=document.createElement('div');node.className='map-node'+(isDone?' done':isCurr?' curr':' lk')+(isBoss?' boss':isTimed?' timed':isPbn?' pbn':'');if(isBoss)node.textContent='💀';else if(isTimed)node.textContent='⚡';else if(isPbn)node.textContent='🎨';else node.textContent=i+1;if(isDone&&levelStars[i]){var star=document.createElement('div');star.className='map-star';star.textContent=levelStars[i]===3?'⭐⭐⭐':levelStars[i]===2?'⭐⭐':'⭐';node.appendChild(star);}if(!isLk)(function(idx,pbn){node.addEventListener('click',function(){lvlIdx=idx;if(pbn){closeMap();startPbn();}else{closeMap();initGame();}});})(i,isPbn);mg.appendChild(node);}}
 function showAch(ico,name,desc){var el=document.getElementById('ach-toast');document.getElementById('ach-ico').textContent=ico;document.getElementById('ach-name').textContent=name;document.getElementById('ach-desc').textContent=desc;el.classList.add('on');setTimeout(function(){el.classList.remove('on');},3000);}
 
 // ══════════════════════════════
@@ -799,43 +783,43 @@ var lvlIdx=0,cfg=null,gameMode='normal';
 var selR=-1,selC=-1,htTimer=null,actBst=-1;
 var bst=[3,3,3],coins=1250,lives=5,locked=false;
 var TS=46,timerVal=60,timerInt=null,timerRunning=false;
-var piecesRevealed=[0,0,0,0,0],paintingsComplete=0;
+var piecesRevealed=[0,0,0,0,0];
 var comboFlashTimer=null,streakCount=0,totalStars=0,threeStarLevels=0;
 var lockedHits={},mystPrize=null,lockWatchdog=null;
-var pbnCompleted=0;
 
 // ══════════════════════════════
-// PAINT BY NUMBER — CORE
+// PAINT BY NUMBER
 // ══════════════════════════════
 function startPbn(){
   pbnSelected=-1;
   var lvlDef=PBN_LEVELS[pbnLvl%PBN_LEVELS.length];
-  var sz=lvlDef.size;
+  pbnCurrentSize=lvlDef.size;
+  pbnCurrentPattern=lvlDef.pattern.slice();
   pbnMoves=lvlDef.moves;
-  pbnTotal=sz*sz;
+  pbnTotal=pbnCurrentSize*pbnCurrentSize;
   pbnFilled=0;
   pbnGrid=[];
   for(var i=0;i<pbnTotal;i++)pbnGrid.push(false);
 
-  // Set titles
   document.getElementById('pbn-painting-name').textContent='Painting '+(pbnLvl+1)+': '+lvlDef.name;
   document.getElementById('pbn-mv-val').textContent=pbnMoves;
   document.getElementById('pbn-filled-val').textContent='0%';
-  document.getElementById('pbn-prog-txt').textContent='Pick a color below, then tap cells with that number!';
   document.getElementById('pbn-prog-fill').style.width='0%';
+  document.getElementById('pbn-prog-txt').textContent='Pick a color below, then tap matching numbered cells!';
   document.getElementById('pbn-win').classList.remove('on');
 
   // Build canvas
   var canvas=document.getElementById('pbn-canvas');
   canvas.innerHTML='';
-  // Calculate cell size
-  var avW=window.innerWidth-24;
-  var avH=window.innerHeight-180;
-  var cellSz=Math.min(Math.floor((avW-GAP*(sz-1))/sz),Math.floor((avH-GAP*(sz-1))/sz),82);
-  canvas.style.cssText='display:grid;grid-template-columns:repeat('+sz+','+cellSz+'px);grid-template-rows:repeat('+sz+','+cellSz+'px);gap:'+GAP+'px;';
+  canvas.classList.remove('complete');
+  var sz=pbnCurrentSize;
+  var avW=window.innerWidth-32;
+  var avH=window.innerHeight-190;
+  var cellSz=Math.min(Math.floor((avW-3*(sz-1))/sz),Math.floor((avH-3*(sz-1))/sz),90);
+  canvas.style.cssText='display:grid;grid-template-columns:repeat('+sz+','+cellSz+'px);grid-template-rows:repeat('+sz+','+cellSz+'px);gap:3px;';
 
   for(var i=0;i<pbnTotal;i++){
-    var animalIdx=lvlDef.pattern[i];
+    var animalIdx=pbnCurrentPattern[i];
     var cell=document.createElement('div');
     cell.className='pbn-cell';
     cell.style.width=cellSz+'px';
@@ -843,19 +827,19 @@ function startPbn(){
     cell.dataset.idx=i;
     cell.dataset.animal=animalIdx;
 
-    // Number in center — just the number, nothing else
+    // Number — large and clear
     var num=document.createElement('div');
     num.className='pbn-num';
-    num.textContent=animalIdx+1; // show 1-5 not 0-4
+    num.textContent=animalIdx+1;
     cell.appendChild(num);
 
-    // Tiny color dot hint in corner — very subtle
+    // Tiny color dot hint
     var dot=document.createElement('div');
     dot.className='pbn-dot';
     dot.style.background=COLORS[animalIdx];
     cell.appendChild(dot);
 
-    // Animal image — hidden until filled correctly
+    // Animal image — hidden until filled
     var img=document.createElement('img');
     img.className='pbn-img';
     img.src=IMGS[animalIdx];
@@ -866,39 +850,31 @@ function startPbn(){
     canvas.appendChild(cell);
   }
 
-  // Build palette — show each unique animal in this painting
+  // Build palette
   var palette=document.getElementById('pbn-palette');
   palette.innerHTML='';
-  // Find which animals are in this painting
   var used=[];
-  lvlDef.pattern.forEach(function(a){if(used.indexOf(a)<0)used.push(a);});
+  pbnCurrentPattern.forEach(function(a){if(used.indexOf(a)<0)used.push(a);});
   used.sort();
   used.forEach(function(animalIdx){
     var btn=document.createElement('div');
     btn.className='pbn-pal-btn';
     btn.id='pbn-pal-'+animalIdx;
     btn.dataset.animal=animalIdx;
-
-    // Number badge top left
     var numBadge=document.createElement('div');
     numBadge.className='pbn-pal-num';
     numBadge.textContent=animalIdx+1;
     btn.appendChild(numBadge);
-
-    // Animal image
     var img=document.createElement('img');
     img.src=IMGS[animalIdx];
     img.alt=NAMES[animalIdx];
     btn.appendChild(img);
-
-    // Remaining count badge bottom right
-    var cnt=lvlDef.pattern.filter(function(a){return a===animalIdx;}).length;
+    var cnt=pbnCurrentPattern.filter(function(a){return a===animalIdx;}).length;
     var cntBadge=document.createElement('div');
     cntBadge.className='pbn-pal-cnt';
     cntBadge.id='pbn-cnt-'+animalIdx;
     cntBadge.textContent=cnt;
     btn.appendChild(cntBadge);
-
     btn.addEventListener('click',function(){selectPbnColor(animalIdx);});
     palette.appendChild(btn);
   });
@@ -908,51 +884,34 @@ function startPbn(){
 
 function selectPbnColor(animalIdx){
   pbnSelected=animalIdx;
-  // Deselect all
   document.querySelectorAll('.pbn-pal-btn').forEach(function(b){b.classList.remove('sel');});
-  // Select this one
   var btn=document.getElementById('pbn-pal-'+animalIdx);
   if(btn)btn.classList.add('sel');
-  floaty('Selected: '+NAMES[animalIdx]+'  ('+( animalIdx+1)+')',window.innerWidth/2,150);
+  floaty('Color '+( animalIdx+1)+': '+NAMES[animalIdx],window.innerWidth/2,160);
 }
 
 function onPbnTap(e){
   var cell=e.currentTarget;
   var idx=+cell.dataset.idx;
   var animalIdx=+cell.dataset.animal;
-
-  // Already filled
   if(pbnGrid[idx])return;
-
-  // No color selected
-  if(pbnSelected<0){
-    floaty('👆 Pick a color first!',window.innerWidth/2,window.innerHeight/2);
-    return;
-  }
-
-  // Out of moves
-  if(pbnMoves<=0){
-    floaty('No moves left! 😢',window.innerWidth/2,window.innerHeight/2);
-    return;
-  }
+  if(pbnSelected<0){floaty('👆 Pick a color first!',window.innerWidth/2,window.innerHeight/2);return;}
+  if(pbnMoves<=0){floaty('No moves left! 😢',window.innerWidth/2,window.innerHeight/2);return;}
 
   pbnMoves--;
   document.getElementById('pbn-mv-val').textContent=pbnMoves;
 
   if(pbnSelected===animalIdx){
-    // ✅ CORRECT!
+    // ✅ CORRECT
     pbnGrid[idx]=true;
     pbnFilled++;
     cell.classList.add('filled');
-
-    // Burst effect
     var rc=cell.getBoundingClientRect();
     burst(rc.left+rc.width/2,rc.top+rc.height/2,COLORS[animalIdx]);
 
-    // Update remaining count for this color
+    // Update count badge
     var remaining=0;
-    var lvlDef=PBN_LEVELS[pbnLvl%PBN_LEVELS.length];
-    for(var i=0;i<pbnTotal;i++){if(lvlDef.pattern[i]===animalIdx&&!pbnGrid[i])remaining++;}
+    for(var i=0;i<pbnTotal;i++){if(pbnCurrentPattern[i]===animalIdx&&!pbnGrid[i])remaining++;}
     var cntBadge=document.getElementById('pbn-cnt-'+animalIdx);
     if(cntBadge){cntBadge.textContent=remaining;if(remaining===0)cntBadge.className='pbn-pal-cnt done';}
 
@@ -964,18 +923,29 @@ function onPbnTap(e){
 
     // Check win
     if(pbnFilled>=pbnTotal){
-      setTimeout(showPbnWin,400);
+      // MOSAIC REVEAL — close gaps first, then show win
+      setTimeout(function(){triggerMosaicReveal();},300);
     }
   }else{
-    // ❌ WRONG!
+    // ❌ WRONG
     cell.classList.add('wrong');
     setTimeout(function(){cell.classList.remove('wrong');},380);
-    floaty('❌ Wrong! Need '+NAMES[animalIdx]+' ('+( animalIdx+1)+')',window.innerWidth/2,window.innerHeight/2);
-
-    if(pbnMoves<=0){
-      setTimeout(function(){floaty('😢 Out of moves!',window.innerWidth/2,window.innerHeight/3);},500);
-    }
+    floaty('❌ Need '+NAMES[animalIdx]+' ('+( animalIdx+1)+')',window.innerWidth/2,window.innerHeight/2);
   }
+}
+
+function triggerMosaicReveal(){
+  // Step 1: Close the gaps on the canvas — becomes one unified painting
+  var canvas=document.getElementById('pbn-canvas');
+  canvas.classList.add('complete');
+
+  // Remove numbers and dots from all cells
+  canvas.querySelectorAll('.pbn-num,.pbn-dot').forEach(function(el){
+    el.style.opacity='0';
+  });
+
+  // Step 2: After animation, show the win overlay with full mosaic
+  setTimeout(function(){showPbnWin();},900);
 }
 
 function showPbnWin(){
@@ -986,29 +956,51 @@ function showPbnWin(){
   var lvlDef=PBN_LEVELS[pbnLvl%PBN_LEVELS.length];
   document.getElementById('pbn-win-sub').textContent=lvlDef.name.toUpperCase();
 
-  // Build the completed painting display
-  var art=document.getElementById('pbn-win-art');
-  art.innerHTML='';
-  var sz=lvlDef.size;
-  var cellSz=Math.min(Math.floor((window.innerWidth-40)/sz),Math.floor((window.innerHeight/2)/sz),70);
-  art.style.cssText='display:grid;grid-template-columns:repeat('+sz+','+cellSz+'px);grid-template-rows:repeat('+sz+','+cellSz+'px);gap:2px;';
+  // Build the MOSAIC — no gaps, seamlessly joined
+  var mosaic=document.getElementById('pbn-mosaic');
+  mosaic.innerHTML='';
+  var sz=pbnCurrentSize;
+
+  // Calculate size to fit screen
+  var maxSz=Math.min(window.innerWidth-60,window.innerHeight*0.42);
+  var cellSz=Math.floor(maxSz/sz);
+  var totalSz=cellSz*sz;
+
+  mosaic.style.cssText=
+    'display:grid;'+
+    'grid-template-columns:repeat('+sz+','+cellSz+'px);'+
+    'grid-template-rows:repeat('+sz+','+cellSz+'px);'+
+    'gap:0;'; // NO GAPS — seamless mosaic
 
   for(var i=0;i<pbnTotal;i++){
-    var animalIdx=lvlDef.pattern[i];
+    var animalIdx=pbnCurrentPattern[i];
     var cell=document.createElement('div');
-    cell.style.cssText='width:'+cellSz+'px;height:'+cellSz+'px;overflow:hidden;border-radius:5px;';
+    cell.className='mosaic-cell';
+    cell.style.width=cellSz+'px';
+    cell.style.height=cellSz+'px';
+
     var img=document.createElement('img');
     img.src=IMGS[animalIdx];
+    img.alt=NAMES[animalIdx];
+    // Each image fills its cell completely — no borders, no gaps
     img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
     cell.appendChild(img);
-    art.appendChild(cell);
+    mosaic.appendChild(cell);
   }
+
+  // Set wrapper size
+  document.getElementById('pbn-mosaic-wrap').style.cssText=
+    'width:'+totalSz+'px;height:'+totalSz+'px;'+
+    'position:relative;border:5px solid #FFD700;border-radius:14px;overflow:hidden;'+
+    'box-shadow:0 0 0 2px #000,0 0 30px rgba(255,215,0,.8),0 0 70px rgba(255,140,0,.4),0 20px 40px rgba(0,0,0,.7);'+
+    'animation:mosaicReveal .9s cubic-bezier(.22,1,.36,1);flex-shrink:0;';
 
   var coinRew=400+pbnLvl*50;
   document.getElementById('pbn-win-coins').textContent='+'+coinRew;
   coins+=coinRew;bst[0]+=2;hud();
 
-  for(var i=0;i<10;i++){(function(idx){setTimeout(function(){confetti(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.5);},idx*80);})(i);}
+  // Confetti celebration
+  for(var i=0;i<12;i++){(function(idx){setTimeout(function(){confetti(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.5);},idx*80);})(i);}
 
   document.getElementById('pbn-win').classList.add('on');
 }
@@ -1062,29 +1054,15 @@ function rnd(){return Math.floor(Math.random()*NT);}
 function mkT(t,pw){return{type:t,power:pw||null};}
 function cT(r,c){if(r<0||r>=ROWS||c<0||c>=COLS)return -1;var cl=grid[r][c];if(cl==null)return -1;return typeof cl==='number'?cl:cl.type;}
 function cB(r,c){var cl=grid[r]&&grid[r][c];return cl!=null&&typeof cl==='number'&&cl>=10;}
-function buildGrid(){
-  cfg=mkLvl(lvlIdx);targets=cfg.goalAmts.slice();cleared=[0,0,0,0,0];lockedHits={};
-  grid=[];for(var r=0;r<ROWS;r++){grid[r]=[];for(var c=0;c<COLS;c++)grid[r][c]=mkT(rnd());}
-  var blkList=cfg.blockers.slice();var cands=[];
-  for(var r=1;r<ROWS-1;r++)for(var c=0;c<COLS;c++)cands.push([r,c]);
-  shuffle(cands);for(var i=0;i<blkList.length&&i<cands.length;i++)grid[cands[i][0]][cands[i][1]]=blkList[i];
-  for(var p=0;p<8;p++)for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)if(hMA(r,c))grid[r][c]=mkT(rnd());
-  var t=0;while(!anyM()&&t++<300)for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)if(!cB(r,c))grid[r][c]=mkT(rnd());
-}
+function buildGrid(){cfg=mkLvl(lvlIdx);targets=cfg.goalAmts.slice();cleared=[0,0,0,0,0];lockedHits={};grid=[];for(var r=0;r<ROWS;r++){grid[r]=[];for(var c=0;c<COLS;c++)grid[r][c]=mkT(rnd());}var blkList=cfg.blockers.slice();var cands=[];for(var r=1;r<ROWS-1;r++)for(var c=0;c<COLS;c++)cands.push([r,c]);shuffle(cands);for(var i=0;i<blkList.length&&i<cands.length;i++)grid[cands[i][0]][cands[i][1]]=blkList[i];for(var p=0;p<8;p++)for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)if(hMA(r,c))grid[r][c]=mkT(rnd());var t=0;while(!anyM()&&t++<300)for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)if(!cB(r,c))grid[r][c]=mkT(rnd());}
 function shuffle(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;}}
 function hMA(r,c){var t=cT(r,c);if(t<0||t>=10)return false;if(c>=2&&cT(r,c-1)===t&&cT(r,c-2)===t)return true;if(r>=2&&cT(r-1,c)===t&&cT(r-2,c)===t)return true;return false;}
-function findM(){
-  var M=[],seen={};
-  function add(r,c){var k=r*COLS+c;if(!seen[k]){seen[k]=true;M.push({r:r,c:c});}}
-  for(var r=0;r<ROWS;r++){var c=0;while(c<COLS){if(cB(r,c)){c++;continue;}var t=cT(r,c),e=c;while(e+1<COLS&&!cB(r,e+1)&&cT(r,e+1)===t)e++;if(e-c>=2)for(var i=c;i<=e;i++)add(r,i);c=e+1;}}
-  for(var c=0;c<COLS;c++){var r=0;while(r<ROWS){if(cB(r,c)){r++;continue;}var t=cT(r,c),e=r;while(e+1<ROWS&&!cB(e+1,c)&&cT(e+1,c)===t)e++;if(e-r>=2)for(var i=r;i<=e;i++)add(i,c);r=e+1;}}
-  return M;
-}
+function findM(){var M=[],seen={};function add(r,c){var k=r*COLS+c;if(!seen[k]){seen[k]=true;M.push({r:r,c:c});}}for(var r=0;r<ROWS;r++){var c=0;while(c<COLS){if(cB(r,c)){c++;continue;}var t=cT(r,c),e=c;while(e+1<COLS&&!cB(r,e+1)&&cT(r,e+1)===t)e++;if(e-c>=2)for(var i=c;i<=e;i++)add(r,i);c=e+1;}}for(var c=0;c<COLS;c++){var r=0;while(r<ROWS){if(cB(r,c)){r++;continue;}var t=cT(r,c),e=r;while(e+1<ROWS&&!cB(e+1,c)&&cT(e+1,c)===t)e++;if(e-r>=2)for(var i=r;i<=e;i++)add(i,c);r=e+1;}}return M;}
 function swG(r1,c1,r2,c2){var t=grid[r1][c1];grid[r1][c1]=grid[r2][c2];grid[r2][c2]=t;}
 function anyM(){for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){if(cB(r,c))continue;for(var d=0;d<2;d++){var nr=r+[0,1][d],nc=c+[1,0][d];if(nr>=ROWS||nc>=COLS||cB(nr,nc))continue;swG(r,c,nr,nc);var ok=findM().length>0;swG(r,c,nr,nc);if(ok)return true;}}return false;}
 function fHint(){for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){if(cB(r,c))continue;var dirs=[[0,1],[1,0],[0,-1],[-1,0]];for(var d=0;d<dirs.length;d++){var nr=r+dirs[d][0],nc=c+dirs[d][1];if(nr<0||nr>=ROWS||nc<0||nc>=COLS||cB(nr,nc))continue;swG(r,c,nr,nc);var ok=findM().length>0;swG(r,c,nr,nc);if(ok)return{r1:r,c1:c,r2:nr,c2:nc};}}return null;}
 function checkPower(ms){if(ms.length>=5){earnTrophy('rainbow_vision');return PWR_RAINBOW;}if(ms.length===4)return PWR_ROCKET;var rows={},cols={};ms.forEach(function(m){rows[m.r]=(rows[m.r]||0)+1;cols[m.c]=(cols[m.c]||0)+1;});if(Object.keys(rows).filter(function(k){return rows[k]>=2;}).length>=2||Object.keys(cols).filter(function(k){return cols[k]>=2;}).length>=2)return PWR_BOMB;return null;}
-function getPowerCombo(pw1,pw2){var key=[pw1,pw2].sort().join('+');var c={'rocket+rocket':{name:'DOUBLE ROCKET!',ico:'🚀🚀',desc:'2 rows + 2 cols!',fn:comboRR},'bomb+rocket':{name:'ROCKET BOMB!',ico:'🚀💣',desc:'3 rows + 3 cols!',fn:comboBR},'rainbow+rocket':{name:'RAINBOW ROCKET!',ico:'🚀🌈',desc:'All one animal + row + col!',fn:comboRainR},'bomb+bomb':{name:'MEGA BOMB!',ico:'💣💣',desc:'5×5 — 25 tiles!',fn:comboBB},'bomb+rainbow':{name:'RAINBOW BOMB!',ico:'💣🌈',desc:'All one animal + 5×5!',fn:comboRainB},'rainbow+rainbow':{name:'TOTAL WIPEOUT!',ico:'🌈🌈',desc:'ENTIRE board cleared!',fn:comboRainRain}};return c[key]||null;}
+function getPowerCombo(pw1,pw2){var key=[pw1,pw2].sort().join('+');var c={'rocket+rocket':{name:'DOUBLE ROCKET!',ico:'🚀🚀',desc:'2 rows + 2 cols!',fn:comboRR},'bomb+rocket':{name:'ROCKET BOMB!',ico:'🚀💣',desc:'3 rows + 3 cols!',fn:comboBR},'rainbow+rocket':{name:'RAINBOW ROCKET!',ico:'🚀🌈',desc:'All one animal + row + col!',fn:comboRainR},'bomb+bomb':{name:'MEGA BOMB!',ico:'💣💣',desc:'5×5 tiles!',fn:comboBB},'bomb+rainbow':{name:'RAINBOW BOMB!',ico:'💣🌈',desc:'All one animal + 5×5!',fn:comboRainB},'rainbow+rainbow':{name:'TOTAL WIPEOUT!',ico:'🌈🌈',desc:'ENTIRE board cleared!',fn:comboRainRain}};return c[key]||null;}
 function comboRR(r1,c1,r2,c2,t){var x=[];for(var c=0;c<COLS;c++){if(!cB(r1,c)&&grid[r1][c]!==null)x.push({r:r1,c:c});if(r2!==r1&&!cB(r2,c)&&grid[r2][c]!==null)x.push({r:r2,c:c});}for(var r=0;r<ROWS;r++){if(!cB(r,c1)&&grid[r][c1]!==null)x.push({r:r,c:c1});if(c2!==c1&&!cB(r,c2)&&grid[r][c2]!==null)x.push({r:r,c:c2});}return dedup(x);}
 function comboBR(r1,c1,r2,c2,t){var x=[];for(var dr=-1;dr<=1;dr++){var rr=r1+dr;if(rr>=0&&rr<ROWS)for(var c=0;c<COLS;c++)if(!cB(rr,c)&&grid[rr][c]!==null)x.push({r:rr,c:c});}for(var dc=-1;dc<=1;dc++){var cc=c1+dc;if(cc>=0&&cc<COLS)for(var r=0;r<ROWS;r++)if(!cB(r,cc)&&grid[r][cc]!==null)x.push({r:r,c:cc});}return dedup(x);}
 function comboRainR(r1,c1,r2,c2,t){var x=[];for(var rr=0;rr<ROWS;rr++)for(var cc=0;cc<COLS;cc++)if(!cB(rr,cc)&&cT(rr,cc)===t)x.push({r:rr,c:cc});for(var c=0;c<COLS;c++)if(!cB(r1,c)&&grid[r1][c]!==null)x.push({r:r1,c:c});for(var r=0;r<ROWS;r++)if(!cB(r,c1)&&grid[r][c1]!==null)x.push({r:r,c:c1});return dedup(x);}
@@ -1276,7 +1254,7 @@ function stopTimer(){timerRunning=false;clearInterval(timerInt);timerInt=null;do
 function updateTimerUI(){var el=document.getElementById('tm-val');if(!el)return;el.textContent=timerVal;el.className='tm-val'+(timerVal<=10?' urgent':'');}
 
 // ══════════════════════════════
-// PUZZLE
+// PUZZLE / ART GALLERY
 // ══════════════════════════════
 function getPuzzleIdx(){return Math.floor(lvlIdx/LVL_PER_PUZZLE)%5;}
 function buildPuzzleGrid(){
@@ -1285,13 +1263,13 @@ function buildPuzzleGrid(){
   document.getElementById('gal-name').textContent=NAMES[pIdx]+' Art';
   document.getElementById('gal-pieces').textContent=revealed+'/'+PIECES;
   document.getElementById('gal-fill').style.width=Math.round(revealed/PIECES*100)+'%';
-  document.getElementById('gal-prize').textContent=(500+pIdx*100)+'🪙 +'+(3+pIdx)+'🔨';
+  document.getElementById('gal-prize').textContent=(500+pIdx*100)+'🪙';
   for(var i=0;i<PIECES;i++){var p=document.createElement('div');p.className='pz-piece'+(i<revealed?' revealed':'');var img=document.createElement('img');img.className='pz-img';var col=i%4,row=Math.floor(i/4);img.src=IMGS[pIdx];img.style.cssText='width:400%;height:400%;object-fit:cover;object-position:'+(-col*100)+'% '+(-row*100)+'%;display:block;';if(i<revealed)img.style.opacity='1';var lk=document.createElement('div');lk.className='pz-lock';lk.textContent='🔒';p.appendChild(img);p.appendChild(lk);pg.appendChild(p);}
 }
 function revealPieces(count){var pIdx=getPuzzleIdx();var oldR=piecesRevealed[pIdx]||0;var newR=Math.min(oldR+count,PIECES);piecesRevealed[pIdx]=newR;var pg=document.getElementById('pz-grid');if(!pg)return;var pieces=pg.querySelectorAll('.pz-piece');for(var i=oldR;i<newR;i++){(function(piece){setTimeout(function(){var img=piece.querySelector('.pz-img');if(img)img.style.opacity='1';piece.classList.add('revealed');},((i-oldR)*180));})(pieces[i]);}setTimeout(function(){document.getElementById('gal-pieces').textContent=newR+'/'+PIECES;document.getElementById('gal-fill').style.width=Math.round(newR/PIECES*100)+'%';if(newR>=PIECES)setTimeout(function(){showPaintingComplete(getPuzzleIdx());},850);},count*180+380);}
 function showPaintingComplete(pIdx){earnTrophy('art_collector');document.getElementById('pz-ttl').textContent=NAMES[pIdx]+' Art Complete!';document.getElementById('pz-big-img').src=IMGS[pIdx];var pr=document.getElementById('pz-rewards');if(pr){pr.innerHTML='';[{ico:'🪙',val:'+'+(500+pIdx*100)},{ico:'🔨',val:'+'+(3+pIdx)},{ico:'⭐',val:'+5'}].forEach(function(r){var el=document.createElement('div');el.className='w-rew';el.innerHTML='<div class="w-rew-ico">'+r.ico+'</div><div class="w-rew-val">'+r.val+'</div>';pr.appendChild(el);});}for(var i=0;i<8;i++){(function(idx){setTimeout(function(){confetti(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.6);},idx*100);})(i);}document.getElementById('pz-ov').classList.add('on');}
 function claimPuzzlePrize(){var pIdx=getPuzzleIdx();coins+=500+pIdx*100;bst[0]+=3+pIdx;bst[1]+=5;hud();piecesRevealed[pIdx]=0;document.getElementById('pz-ov').classList.remove('on');floaty('🎁 Art Prize Claimed!',window.innerWidth/2,window.innerHeight/2);}
-function addStars(n){totalStars+=n;if(totalStars>=20){totalStars-=20;coins+=800;bst[0]+=5;hud();floaty('🎁 Star Chest! +800🪙 +5🔨',window.innerWidth/2,window.innerHeight/2);for(var i=0;i<6;i++){(function(idx){setTimeout(function(){confetti(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.5);},idx*80);})(i);}}}
+function addStars(n){totalStars+=n;if(totalStars>=20){totalStars-=20;coins+=800;bst[0]+=5;hud();floaty('🎁 Star Chest! +800🪙',window.innerWidth/2,window.innerHeight/2);for(var i=0;i<6;i++){(function(idx){setTimeout(function(){confetti(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.5);},idx*80);})(i);}}}
 function buildGoalRows(){var gr=document.getElementById('goal-rows');if(!gr)return;gr.innerHTML='';for(var i=0;i<5;i++){if(!targets[i])continue;var row=document.createElement('div');row.className='goal-row';row.id='gr'+i;var ico=document.createElement('div');ico.className='goal-ico';var img=document.createElement('img');img.src=IMGS[i];img.alt=NAMES[i];ico.appendChild(img);var info=document.createElement('div');info.style.flex='1';var name=document.createElement('div');name.className='goal-name';name.textContent=NAMES[i];var num=document.createElement('div');num.className='goal-num';num.id='gn'+i;num.textContent=targets[i];info.appendChild(name);info.appendChild(num);row.appendChild(ico);row.appendChild(info);gr.appendChild(row);}}
 function triggerMystery(){var prizes=[{txt:'+300 Coins',fn:function(){coins+=300;}},{txt:'+2 Hammers',fn:function(){bst[0]+=2;}},{txt:'+1 Life',fn:function(){lives=Math.min(10,lives+1);}},{txt:'+5 Moves',fn:function(){movesLeft+=5;hud();}},{txt:'+500 Coins',fn:function(){coins+=500;}}];var p=prizes[Math.floor(Math.random()*prizes.length)];mystPrize=p;document.getElementById('myst-prize').textContent=p.txt+'!';document.getElementById('myst-ov').classList.add('on');}
 function claimMystery(){if(mystPrize){mystPrize.fn();mystPrize=null;}hud();document.getElementById('myst-ov').classList.remove('on');}
